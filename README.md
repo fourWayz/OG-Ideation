@@ -66,6 +66,7 @@ ChainChatAI is an **AI-powered decentralized social dApp** that leverages **OG C
 * API calls 0G Compute to get an embedding; stores vector (or shard) on 0G Storage.
 * Contract is updated with the raw post CID and (optionally) the vector CID, and emits events.
 
+---
   
 ## Personalized Feed Generation
 
@@ -76,6 +77,7 @@ ChainChatAI is an **AI-powered decentralized social dApp** that leverages **OG C
 * API loads that JSON (preferences, user vector).
 * It gathers candidate posts (recent, from follows, trending), fetches embeddings, computes scores, and returns a ranked list.
 
+---
 
 ## Smart Contract Interactions (social + AI pointers)
 
@@ -88,17 +90,195 @@ ChainChatAI is an **AI-powered decentralized social dApp** that leverages **OG C
 
 ---
 
-## 🎨 Mockups & Wireframes
-
-*(insert Figma mockups / wireframes here)*
-
-* **Feed Page** – AI-curated posts.
-* **Profile Page** – AI-enhanced profile with summaries.
-* **Chat Page** – AI-assisted conversations with discovery.
+Perfect catch — let’s reshape everything around **ChainChatAI as an AI-powered social dApp** (not a chatbot). Below is a **hackathon-ready submission pack** you can drop into your repo. It includes: detailed problem/solution, feature set, clear narratives around each diagram, mockups/wireframes guidance, and a tight pitch.
 
 ---
 
-## 📑 Pitch Deck / Short Description
+# 🧩 ChainChatAI — AI-Powered Social dApp on 0G
+
+## 🚨 Problem Statement
+
+Modern social feeds are:
+
+1. **Opaque & centralized** — A few companies control ranking algorithms; users can’t inspect, port, or tune them.
+2. **Low signal / high spam** — Discovery is noisy; creators struggle to reach the right audience.
+3. **High friction** — Wallet setup, gas, and on-chain UX scare mainstream users away.
+4. **Data silos** — Your interests, embeddings, and “you” are not portable across apps.
+
+## 💡 Solution (What we’re building)
+
+**ChainChatAI** is a decentralized social app where **feeds are powered by AI and owned by users**. It runs fully on the **0G stack**:
+
+* 🔑 **User-owned AI feeds**: Each user has a feed profile (embeddings, preferences, filters) stored on **0G Storage**; a pointer (CID) is anchored on-chain.
+* 🧠 **AI ranking, summaries & moderation**: Posts are embedded and ranked via **0G Compute**; safety/moderation runs there too.
+* ⚡ **Gasless UX**: **Privy EAO wallet** + **Next.js API relayer** covers gas on the user’s behalf (until 0G paymasters arrive).
+* 💬 **Social core**: Profiles, posts, images, likes, comments, shares — with ccToken incentives (already in your contracts).
+* 🔌 **Open, portable algorithms**: Users can export/import their feed pointers; devs can plug in alternative ranking services.
+* 🔍 **Transparent telemetry**: Feed explains *why* items ranked high (similarity score, freshness, follows, etc.).
+
+---
+
+## 🧩 Feature Set (MVP → Nice-to-Have)
+
+**MVP**
+
+* Create profile; set interests.
+* Create posts (text + image), like, comment, share.
+* Post & user **embeddings** via 0G Compute.
+* Personalized **feed ranking** (similarity + recency + social graph).
+* **User feed pointer** stored on-chain (CID to 0G Storage JSON).
+* Gasless interactions via Privy EAO + relayer.
+
+**Phase 2**
+
+* Generative **summaries**, **hashtags/tags**, **translations**.
+* **Moderation** (NSFW/hate spam) with adjustable community filters.
+* **Explain-my-feed** overlays (why this post).
+* Creator **tips** / boosts in CCT; reward splits.
+* **Model marketplace**: users choose between ranking recipes.
+
+---
+
+## 🔄 Architecture & Workflow
+
+### 1) Post Creation & Indexing (end-to-end)
+
+> What happens when a creator posts? We embed the content, store vectors, and update the on-chain pointers that fuel discovery.
+
+```mermaid
+flowchart TD
+    subgraph User
+        A[Creator writes post] --> B[Next.js Frontend]
+    end
+
+    subgraph NextFrontend[Next.js Frontend]
+        B -->|Send to API Route| C[Next.js API Backend]
+    end
+
+    subgraph NextBackend[Next.js API Backend]
+        C -->|Upload post JSON| S1[0G Storage]
+        C -->|Create embeddings| K1[0G Compute]
+        K1 -->|Return vector| C
+        C -->|Store vector blob| S2[0G Storage]
+        C -->|Update on-chain refs| SC[ChainChat / ChainChatAI Contracts]
+    end
+
+    subgraph OGInfra[0G Infrastructure]
+        S1:::storage
+        S2:::storage
+        K1:::compute
+    end
+
+    SC --> Evt[Emit PostCreated / FeedUpdated Events]
+
+    classDef storage fill:#8ED1FC,stroke:#000,color:#000;
+    classDef compute fill:#7BDCB5,stroke:#000,color:#000;
+```
+
+**Explanation:**
+
+* Frontend sends content → API stores raw post on **0G Storage** and gets a CID.
+* API calls **0G Compute** to get an embedding; stores vector (or shard) on **0G Storage**.
+* Contract is updated with the raw post CID and (optionally) the vector CID, and emits events.
+
+---
+
+### 2) Personalized Feed Generation (read path)
+
+> How a user’s home feed is built using their **user-owned AI feed profile**.
+
+```mermaid
+flowchart TD
+    subgraph Viewer
+        U[User opens Home Feed] --> FE[Next.js Frontend]
+    end
+
+    subgraph Backend[Next.js API Backend]
+        FE -->|Fetch user feed pointer| SC[ChainChatAI Contract]
+        SC -->|Return CID| BE[API resolves CID on 0G Storage]
+        BE -->|Load feed profile (prefs + user embedding)| P[Feed Profile JSON]
+        BE -->|Candidate posts (by recency/follow/hashtags)| Cands[Post IDs]
+        BE -->|Batch fetch vectors| VS[0G Storage Vector Blobs]
+        BE -->|Rank (similarity + freshness + social)| RK[Ranking Service]
+        RK -->|Top N| FE
+    end
+```
+
+**Explanation:**
+
+* Contract stores the user’s **feedPointer** (CID).
+* API loads that JSON (preferences, user vector).
+* It gathers candidate posts (recent, from follows, trending), fetches embeddings, computes scores, and returns a ranked list.
+
+---
+
+### 3) Smart Contract Interactions (social + AI pointers)
+
+> What your contracts do in this system, beyond social actions.
+
+```mermaid
+flowchart TD
+    subgraph Frontend
+        A[Post/Like/Comment/Edit Profile] --> AR[Next.js API (Relayer)]
+    end
+
+    subgraph Chain
+        AR -->|Relayed TX (gasless)| CC[ChainChat Contract]
+        AR -->|Set feed/model CID| AI[ChainChatAI Extension]
+        CC --> EV1[Social Events]
+        AI --> EV2[Feed/Model Events]
+    end
+
+    EV1 --> IDX[Indexer listens & updates caches]
+    EV2 --> IDX
+```
+
+**Explanation:**
+
+* **ChainChat**: posts, likes, comments, profiles, rewards.
+* **ChainChatAI**: `feedPointer` + model/embedding CIDs per user.
+* Indexer/worker watches events to keep caches hot (for snappy feeds).
+
+---
+
+## 🗂️ Data Shapes sample(stored on 0G Storage)
+
+**User Feed Profile (CID set via `updateUserFeed`)**
+
+```json
+{
+  "version": "1.0",
+  "user": "0xUSER",
+  "embedding_cid": "bafy...uservec",
+  "interests": ["ai", "gaming", "memes"],
+  "weights": { "similarity": 0.6, "recency": 0.25, "social": 0.15 },
+  "safety": { "nsfw": "hide", "hate": "hide", "spam": "downrank" },
+  "blocked_terms": ["spoilers"],
+  "explanations": true,
+  "updated_at": 1723948800
+}
+```
+
+**Post Embedding Doc**
+
+```json
+{
+  "version": "1.0",
+  "post_id": 1234,
+  "author": "0xCREATOR",
+  "content_cid": "bafy...rawpost",
+  "embedding": [/* float32[] or pointer to vector shard */],
+  "lang": "en",
+  "tags": ["ai", "builder"],
+  "timestamp": 1723948800
+}
+```
+
+---
+
+
+
+## Short Description
 
 **ChainChatAI is the first AI-powered social dApp built entirely on OG Chain, leveraging its compute, storage, and execution layers.**
 It creates personalized, intelligent, and decentralized social experiences powered by AI — without relying on external providers.
@@ -112,5 +292,3 @@ It creates personalized, intelligent, and decentralized social experiences power
 
 ---
 
-⚡ I can expand this into a **beautiful hackathon-ready README + pitch deck slides** with visuals.
-Do you want me to **start with polishing the README format** (developer-focused) or **the pitch deck slides** (judges-focused)?
