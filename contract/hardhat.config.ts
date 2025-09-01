@@ -21,7 +21,7 @@ const config: HardhatUserConfig = {
     target: "ethers-v6",
   },
   networks: {
-    "0g-testnet": {
+    og_testnet: {
       url: "https://evmrpc-testnet.0g.ai",
       chainId: 16601,
       accounts: [process.env.PRIVATE_KEY!]
