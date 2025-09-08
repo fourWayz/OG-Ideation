@@ -6,6 +6,9 @@ import { useAccount } from 'wagmi';
 import { ogStorage } from '@/app/lib/og-storage';
 import { ogInference } from '@/app/lib/og-inference';
 import { useWriteContract } from 'wagmi';
+import { useGaslessTransactions } from '@/app/hooks/useGaslessTransactions';
+import { useGaslessContract } from '@/app/hooks/useGaslessContract';
+
 export function CreatePost() {
   const [content, setContent] = useState('');
   const [image, setImage] = useState<File | null>(null);
@@ -14,6 +17,9 @@ export function CreatePost() {
   const { address } = useAccount();
   const { writeContractAsync } = useWriteContract()
 
+  const { createPost } = useGaslessContract();
+  const { loginToRelayer } = useGaslessTransactions();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +27,16 @@ export function CreatePost() {
 
     setIsLoading(true);
     try {
+
+      // First login to relayer for authentication
+      await loginToRelayer();
       // Upload content to OG Storage
       const contentData = {
         text: content,
         timestamp: Date.now(),
         author: address,
       };
-      
+
       const contentCID = await ogStorage.uploadJSON(contentData);
 
       // Generate embedding for AI recommendations
@@ -40,23 +49,23 @@ export function CreatePost() {
       // Upload image if provided
       let imageCID = '';
       if (image) {
-      imageCID = (await ogStorage.uploadProfile(image)).cid;
+        imageCID = (await ogStorage.uploadProfile(image)).cid;
       }
 
       // Store on-chain
       // ✅ Store on-chain with wagmi
-    const txHash = await writeContractAsync({
-      address: chainchat.address,
-      abi: chainchat.abi,
-      functionName: 'createPost',
-      args: [contentCID, imageCID],
-    });
+      const txHash = await writeContractAsync({
+        address: chainchat.address,
+        abi: chainchat.abi,
+        functionName: 'createPost',
+        args: [contentCID, imageCID],
+      });
 
-    console.log('tx hash:', txHash);
-      
+      console.log('tx hash:', txHash);
+
       setContent('');
       setImage(null);
-      
+
       // Refresh feed
     } catch (error) {
       console.error('Error creating post:', error);
@@ -76,7 +85,7 @@ export function CreatePost() {
           rows={3}
           disabled={isLoading}
         />
-        
+
         <input
           type="file"
           accept="image/*"
@@ -84,7 +93,7 @@ export function CreatePost() {
           className="w-full p-2 border border-gray-300 rounded-lg"
           disabled={isLoading}
         />
-        
+
         <button
           type="submit"
           disabled={!content || isLoading}
