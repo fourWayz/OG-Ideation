@@ -49,7 +49,7 @@ export class OGStorageService {
         type: 'profile'
       };
 
-      return await this.uploadJSON(profile).;
+      return await this.uploadJSON(profile);
     } catch (error) {
       console.error('Profile upload failed:', error);
       throw error;

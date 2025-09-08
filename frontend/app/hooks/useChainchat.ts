@@ -5,12 +5,12 @@ import CCTokenABI from '../abis/CCToken.json'
 export const useChainchat = () => {
     const chainchat = {
         address: process.env.NEXT_PUBLIC_CHAINCHAT_CONTRACT as `0x${string}`,
-        abi: ChainchatABI,
+        abi: ChainchatABI.abi,
     } as const
 
     const ccToken = {
         address: process.env.NEXT_PUBLIC_CC_TOKEN_CONTRACT as `0x${string}`,
-        abi: CCTokenABI,
+        abi: CCTokenABI.abi,
     } as const
 
     return { chainchat, ccToken }

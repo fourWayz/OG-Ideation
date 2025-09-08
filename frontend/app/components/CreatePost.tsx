@@ -5,13 +5,15 @@ import { useChainchat } from '@/app/hooks/useChainchat';
 import { useAccount } from 'wagmi';
 import { ogStorage } from '@/app/lib/og-storage';
 import { ogInference } from '@/app/lib/og-inference';
-
+import { useWriteContract } from 'wagmi';
 export function CreatePost() {
   const [content, setContent] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { chainchat } = useChainchat();
   const { address } = useAccount();
+  const { writeContractAsync } = useWriteContract()
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +44,15 @@ export function CreatePost() {
       }
 
       // Store on-chain
-      const tx = await chainchat.createPost(contentCID, imageCID);
-      await tx.wait();
+      // ✅ Store on-chain with wagmi
+    const txHash = await writeContractAsync({
+      address: chainchat.address,
+      abi: chainchat.abi,
+      functionName: 'createPost',
+      args: [contentCID, imageCID],
+    });
+
+    console.log('tx hash:', txHash);
       
       setContent('');
       setImage(null);
