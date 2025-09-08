@@ -15,6 +15,7 @@ interface Post {
   likes: number
   commentsCount: number
   originalPostId: number
+  score?: number
 }
 
 export function AIFeed() {
@@ -161,44 +162,75 @@ export function AIFeed() {
   };
 
   if (!postCount) {
-    return <div className="text-center py-8">Loading posts…</div>
+     return (
+      <div className="text-center py-12">
+        <div className="text-gray-400 text-6xl mb-4">🤖</div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts yet</h3>
+        <p className="text-gray-600">Be the first to create a post!</p>
+      </div>
+    );
   }
 
   if (isCurating) {
-    return <div className="text-center py-8">AI is curating your feed…</div>
+   return (
+      <div className="text-center py-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">AI is curating your feed...</p>
+      </div>
+    );
   }
 
-  return (
+ return (
     <div className="space-y-6">
       {posts.map((post) => (
         <div key={post.originalPostId} className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+              <span className="text-white font-semibold">
+                {post.author.slice(2, 4).toUpperCase()}
+              </span>
+            </div>
             <div className="ml-3">
-              <div className="font-semibold">{post.author}</div>
+              <div className="font-semibold text-gray-900">
+                {post.author.slice(0, 8)}...{post.author.slice(-6)}
+              </div>
               <div className="text-sm text-gray-500">
                 {new Date(post.timestamp * 1000).toLocaleString()}
               </div>
             </div>
+            {post.score && (
+              <div className="ml-auto bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                AI Score: {Math.round(post.score * 100)}%
+              </div>
+            )}
           </div>
-            {/* TODO : content extraction from CID */}
-          <p className="text-gray-800 mb-4">{post.content.text}</p>
-
-          {post.content.image && (
-            <img
-              src={`${process.env.NEXT_PUBLIC_OG_STORAGE_URL}/retrieve/${post.content.image}`}
+          
+          <p className="text-gray-800 mb-4">{post.contentCID.content || post.contentCID}</p>
+          
+          {post.contentCID.imageCID && (
+            <img 
+              src={`${process.env.NEXT_PUBLIC_OG_INDEXER_URL}/retrieve/${post.contentCID.imageCID}`}
               alt="Post"
-              className="rounded-lg mb-4 max-w-full"
+              className="rounded-lg mb-4 max-w-full h-auto"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
             />
           )}
-
-          <div className="flex space-x-4 text-gray-500">
-            <button className="hover:text-blue-600">Like</button>
-            <button className="hover:text-green-600">Comment</button>
-            <button className="hover:text-purple-600">Share</button>
+          
+          <div className="flex space-x-4 text-gray-500 text-sm">
+            <button className="hover:text-blue-600 flex items-center">
+              👍 Like
+            </button>
+            <button className="hover:text-green-600 flex items-center">
+              💬 Comment
+            </button>
+            <button className="hover:text-purple-600 flex items-center">
+              🔄 Share
+            </button>
           </div>
         </div>
       ))}
     </div>
-  )
+  );
 }
