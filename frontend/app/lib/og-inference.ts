@@ -12,7 +12,7 @@ export class OGInference {
 
   static async init(): Promise<OGInference> {
     const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_OG_RPC_URL!);
-    const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY!, provider);
+    const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY!, provider!);
     const broker = await createZGComputeNetworkBroker(wallet);
     const service_provider = process.env.MEXT_PUBLIC_OG_PROVIDER_ADDRESS!;
     return new OGInference(broker,service_provider);
