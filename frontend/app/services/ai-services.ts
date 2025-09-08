@@ -1,13 +1,15 @@
 // src/services/ai-service.ts
-import { ogStorage } from '@/lib/og-storage';
-import { ogInference } from '@/lib/og-inference';
+import { ogStorage } from '../lib/og-storage';
+import { ogInference } from '../lib/og-inference';
+import {ethers} from 'ethers';
+import ChainChatAIABI from '../abis/ChainchatAI.json';
 
 export class AIService {
   async generateEmbeddings(text: string): Promise<{ embedding: number[]; cid: string }> {
     try {
       // Generate embedding using OG Inference
       const embedding = await ogInference.generateEmbedding(text);
-      
+      console.log(embedding,'embedding')
       // Store embedding on OG Storage
       const { cid } = await ogStorage.uploadModel(embedding, 'text-embedding');
       

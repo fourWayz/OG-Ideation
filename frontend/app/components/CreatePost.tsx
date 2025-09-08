@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useChainchat } from '../hooks/useChainchat';
+import { useChainchat } from '@/app/hooks/useChainchat';
 import { useAccount } from 'wagmi';
+import { ogStorage } from '@/app/lib/og-storage';
+import { ogInference } from '@/app/lib/og-inference';
 
 export function CreatePost() {
   const [content, setContent] = useState('');
+  const [image, setImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { chainchat } = useChainchat();
   const { address } = useAccount();
@@ -16,13 +19,35 @@ export function CreatePost() {
 
     setIsLoading(true);
     try {
-      // In production, you'd upload to IPFS/OG Storage first
-      const contentCID = `ipfs://mock-cid-${Date.now()}`;
+      // Upload content to OG Storage
+      const contentData = {
+        text: content,
+        timestamp: Date.now(),
+        author: address,
+      };
       
-      const tx = await chainchat.createPost(contentCID, '');
+      const contentCID = await ogStorage.uploadJSON(contentData);
+
+      // Generate embedding for AI recommendations
+      const embedding = await ogInference.generateEmbedding(content);
+      const embeddingCID = await ogStorage.uploadJSON({
+        embedding,
+        content_cid: contentCID,
+      });
+
+      // Upload image if provided
+      let imageCID = '';
+      if (image) {
+      imageCID = (await ogStorage.uploadProfile(image)).cid;
+      }
+
+      // Store on-chain
+      const tx = await chainchat.createPost(contentCID, imageCID);
       await tx.wait();
       
       setContent('');
+      setImage(null);
+      
       // Refresh feed
     } catch (error) {
       console.error('Error creating post:', error);
@@ -42,12 +67,21 @@ export function CreatePost() {
           rows={3}
           disabled={isLoading}
         />
+        
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files?.[0] || null)}
+          className="w-full p-2 border border-gray-300 rounded-lg"
+          disabled={isLoading}
+        />
+        
         <button
           type="submit"
           disabled={!content || isLoading}
           className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? 'Posting...' : 'Post'}
+          {isLoading ? 'Creating post with AI...' : 'Create Post'}
         </button>
       </form>
     </div>

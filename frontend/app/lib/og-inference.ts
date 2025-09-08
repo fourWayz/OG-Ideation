@@ -3,16 +3,19 @@ import { createZGComputeNetworkBroker } from "@0glabs/0g-serving-broker";
 
 export class OGInference {
   private broker: any;
+  private service_provider: any;
 
-  private constructor(broker: any) {
+  private constructor(broker: any,service_provider: any) {
     this.broker = broker;
+    this.service_provider = service_provider;
   }
 
   static async init(): Promise<OGInference> {
     const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_OG_RPC_URL!);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+    const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY!, provider);
     const broker = await createZGComputeNetworkBroker(wallet);
-    return new OGInference(broker);
+    const service_provider = process.env.MEXT_PUBLIC_OG_PROVIDER_ADDRESS!;
+    return new OGInference(broker,service_provider);
   }
 
   private async callProvider(
@@ -20,19 +23,19 @@ export class OGInference {
     path: string,
     body: any
   ): Promise<any> {
-    // 1. ack provider on-chain
+    //  ack provider on-chain
     await this.broker.inference.acknowledgeProviderSigner(providerAddress);
 
-    // 2. get endpoint + model metadata
+    //  get endpoint + model metadata
     const { endpoint, model } = await this.broker.inference.getServiceMetadata(providerAddress);
 
-    // 3. sign request headers
+    // sign request headers
     const headers = await this.broker.inference.getRequestHeaders(
       providerAddress,
       JSON.stringify(body)
     );
 
-    // 4. send POST request
+    //  send POST request
     const resp = await fetch(`${endpoint}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...headers },
@@ -46,25 +49,26 @@ export class OGInference {
     return resp.json();
   }
 
-  async generateEmbedding(providerAddress: string, text: string): Promise<number[]> {
-    const result = await this.callProvider(providerAddress, "/embeddings", { text });
+  async generateEmbedding(text: string): Promise<number[]> {
+    const result = await this.callProvider(this.service_provider, "/embeddings", { text });
     return result.embedding;
   }
 
-  async generateSummary(providerAddress: string, text: string): Promise<string> {
-    const result = await this.callProvider(providerAddress, "/summarize", { text });
+  async generateSummary(text: string): Promise<string> {
+    const result = await this.callProvider(this.service_provider, "/summarize", { text });
     return result.summary;
   }
 
   async recommendContent(
-    providerAddress: string,
     userEmbedding: number[],
     contentEmbeddings: number[][]
   ): Promise<number[]> {
-    const result = await this.callProvider(providerAddress, "/recommend", {
+    const result = await this.callProvider(this.service_provider, "/recommend", {
       user_embedding: userEmbedding,
       content_embeddings: contentEmbeddings,
     });
     return result.scores;
   }
 }
+
+export const ogInference = await OGInference.init();
