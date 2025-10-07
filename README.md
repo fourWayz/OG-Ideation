@@ -1,7 +1,3 @@
-# Deployments on OG chain
-
-## ChainchatAI's contract address : 0x53129F6296b2378381e89F1aB8506d3617AA3eC2
-## Chainchat's token contract address : 0xBa78c4cA2D5050E6cF52047F4469CD8B96A5C5b4
 
 # ChainChatAI – AI-Powered Social dApp on OG Chain
 
