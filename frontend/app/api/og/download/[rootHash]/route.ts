@@ -3,13 +3,13 @@ import { join } from 'path';
 import { Indexer } from '@0glabs/0g-ts-sdk';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { rootHash: string } }
+   request: NextRequest,
+  { params }: any  
 ) {
   try {
-    const { rootHash } = params;
+   const { rootHash } = await params
 
-    const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC || 'https://indexer-storage-testnet-standard.0g.ai';
+    const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC!;
     const indexer = new Indexer(INDEXER_RPC);
 
     // Create download path
@@ -24,14 +24,14 @@ export async function GET(
 
     // Download from 0G Storage
     const err = await indexer.download(rootHash, outputPath, true);
-    
+
     if (err !== null) {
       throw new Error(`Download error: ${err}`);
     }
 
     // Read the file and send as response
     const fileBuffer = fs.readFileSync(outputPath);
-    
+
     // Clean up downloaded file
     fs.unlinkSync(outputPath);
 
