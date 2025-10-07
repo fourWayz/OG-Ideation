@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     // Create temporary file path
-    const tempDir = join(process.cwd(), 'temp');
+    const tempDir = '/tmp';
     const tempPath = join(tempDir, `upload-${Date.now()}-${file.name}`);
-    
+
     // Ensure temp directory exists
     const fs = await import('fs');
     if (!fs.existsSync(tempDir)) {
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     // Upload to 0G Storage
     const zgFile = await ZgFile.fromFilePath(tempPath);
     const [tree, treeErr] = await zgFile.merkleTree();
-    
+
     if (treeErr !== null) {
       throw new Error(`Error generating Merkle tree: ${treeErr}`);
     }

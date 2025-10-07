@@ -14,7 +14,7 @@ export async function GET(
     const indexer = new Indexer(INDEXER_RPC);
 
     // Create download path
-    const downloadsDir = join(process.cwd(), 'downloads');
+    const downloadsDir = '/tmp';
     const outputPath = join(downloadsDir, `${rootHash}.file`);
 
     // Ensure downloads directory exists
