@@ -62,74 +62,108 @@ export function CreatePostCard() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="What's on your mind?"
-          className="w-full resize-none border-0 focus:ring-0 text-lg placeholder-gray-400 min-h-[100px] p-0"
-          disabled={isCreating}
-        />
+    <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Share your story with the world..."
+        className="w-full resize-none border border-gray-200/80 rounded-2xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-300 text-gray-800 placeholder-gray-500/70 min-h-[120px] p-5 text-lg leading-relaxed bg-white/50 backdrop-blur-sm transition-all duration-300 font-medium shadow-inner"
+        disabled={isCreating}
+        style={{ 
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
+          lineHeight: '1.6'
+        }}
+      />
+      {content.length > 0 && (
+        <div className="absolute bottom-3 right-3 text-xs text-gray-500/70 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full border border-white/50">
+          {content.length}
+        </div>
+      )}
+    </div>
         
         {/* Image Preview */}
         {imagePreview && (
-          <div className="relative rounded-lg overflow-hidden">
+          <div className="relative rounded-xl overflow-hidden border border-gray-200">
             <img 
               src={imagePreview} 
               alt="Preview" 
-              className="w-full max-h-96 object-cover rounded-lg"
+              className="w-full max-h-96 object-cover"
             />
             <button
               type="button"
               onClick={removeImage}
-              className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full transition-colors"
+              className="absolute top-3 right-3 bg-black/70 hover:bg-black/90 text-white p-2 rounded-full transition-all duration-200 hover:scale-110"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
         )}
         
+        {/* Action Bar */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             <input
               type="file"
               ref={fileInputRef}
               onChange={handleImageSelect}
               accept="image/*"
               className="hidden"
+              disabled={isCreating}
             />
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 disabled:opacity-50"
               disabled={isCreating}
             >
               <Image className="w-5 h-5" />
+              <span className="text-sm font-medium">Photo</span>
             </button>
+            
             <button
               type="button"
-              className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-3 py-2 text-gray-400 rounded-lg cursor-not-allowed"
               disabled
+              title="Coming soon"
             >
               <Video className="w-5 h-5" />
+              <span className="text-sm font-medium">Video</span>
             </button>
+            
             <button
               type="button"
-              className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-3 py-2 text-gray-400 rounded-lg cursor-not-allowed"
               disabled
+              title="Coming soon"
             >
               <FileText className="w-5 h-5" />
+              <span className="text-sm font-medium">File</span>
             </button>
           </div>
           
           <button
             type="submit"
             disabled={(!content.trim() && !selectedImage) || isCreating}
-            className="flex items-center space-x-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            <Send className="w-4 h-4" />
-            <span>{isCreating ? 'Posting...' : 'Post'}</span>
+            {isCreating ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Posting...</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4" />
+                <span>Post</span>
+              </>
+            )}
           </button>
+        </div>
+
+        {/* Helper Text */}
+        <div className="text-xs text-gray-500 text-center">
+          {!content.trim() && !selectedImage && "Share your thoughts or upload an image to get started"}
         </div>
       </form>
     </div>

@@ -37,8 +37,8 @@ export function Header() {
           {isConnected && isRegistered && (
             <nav className="hidden md:flex items-center space-x-1">
               <NavLink href="/" icon={Home} label="Feed" />
-              <NavLink href="/post/create" icon={PlusCircle} label="Create" />
-              <NavLink href="/rewards" icon={Trophy} label="Rewards" />
+              {/* <NavLink href="/post/create" icon={PlusCircle} label="Create" /> */}
+              {/* <NavLink href="/rewards" icon={Trophy} label="Rewards" /> */}
               <NavLink href="/profile" icon={User} label="Profile" />
             </nav>
           )}

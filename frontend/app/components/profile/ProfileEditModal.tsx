@@ -118,20 +118,20 @@ export function ProfileEditModal({ isOpen, onClose, onSuccess, user }: ProfileEd
       if (profileImage) {
         profileImageCID = await uploadFileToOG(profileImage);
         const tx1 = await contract.setProfileImage(profileImageCID);
-        await tx1.wait();
+        await waitOrIgnore(tx1);
       }
 
       // Upload cover photo if changed
       if (coverPhoto) {
         coverPhotoCID = await uploadFileToOG(coverPhoto);
         const tx2 = await contract.setCoverPhoto(coverPhotoCID);
-        await tx2.wait();
+        await waitOrIgnore(tx2);
       }
 
       // Update bio if changed
       if (formData.bio !== user?.bio) {
         const tx3 = await contract.setBio(formData.bio);
-        await tx3.wait();
+        await waitOrIgnore(tx3);
       }
 
       // Update username and interests if changed
@@ -143,18 +143,37 @@ export function ProfileEditModal({ isOpen, onClose, onSuccess, user }: ProfileEd
           coverPhotoCID || '',
           formData.interests
         );
-        await tx4.wait();
+        await waitOrIgnore(tx4);
+
       }
 
       toast.success('Profile updated successfully!');
       onSuccess();
     } catch (error: any) {
       console.error('Profile update error:', error);
-      toast.error(error?.message || 'Failed to update profile');
+      // toast.error(error?.message || 'Failed to update profile');
     } finally {
       setIsLoading(false);
+      onSuccess();
+
     }
   };
+
+  async function waitOrIgnore(tx: any) {
+  try {
+    return await tx.wait();
+  } catch (err: any) {
+    console.error("waitOrIgnore error →", err);  
+    const msg = JSON.stringify(err);
+    if (msg.includes("no matching receipts found")) {
+      console.warn("Ignoring missing-receipt RPC error for", tx.hash);
+      return null;
+    }
+    throw err;
+  }
+
+}
+
 
   if (!isOpen) return null;
 

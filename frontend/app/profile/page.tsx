@@ -35,6 +35,7 @@ export default function ProfilePage() {
     );
   }
 
+  console.log(user, "← user profile data");
   const handleProfileUpdate = () => {
     refetch(); // Refresh profile data
     setIsEditModalOpen(false);

@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
     const signer = new ethers.Wallet(PRIVATE_KEY, provider);
     const indexer = new Indexer(INDEXER_RPC);
 
-    console.log(RPC_URL,INDEXER_RPC,PRIVATE_KEY)
 
     // Create temporary file with JSON data
     const tempDir = join(process.cwd(), 'temp');
