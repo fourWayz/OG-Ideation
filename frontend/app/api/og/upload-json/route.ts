@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate environment variables
-    const RPC_URL = process.env.NEXT_PUBLIC_OG_RPC_URL!;
-    const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC!;
-    const PRIVATE_KEY = process.env.NEXT_PUBLIC_PRIVATE_KEY!;
+    const RPC_URL = process.env.NEXT_PUBLIC_OG_RPC_URL;
+    const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC;
+    const PRIVATE_KEY = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
     if (!RPC_URL || !INDEXER_RPC || !PRIVATE_KEY) {
       return NextResponse.json(
@@ -37,7 +37,6 @@ export async function POST(request: NextRequest) {
     const provider = new ethers.JsonRpcProvider(RPC_URL);
     const signer = new ethers.Wallet(PRIVATE_KEY, provider);
     const indexer = new Indexer(INDEXER_RPC);
-
 
     // Create temporary file with JSON data
     const tempDir = join(process.cwd(), 'temp');

@@ -4,8 +4,18 @@ import { join } from 'path';
 import { Indexer, ZgFile } from '@0glabs/0g-ts-sdk';
 import { ethers } from 'ethers';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
+    // Check if we're in a server environment
+    if (typeof window !== 'undefined') {
+      return NextResponse.json(
+        { error: 'This route can only be accessed server-side' },
+        { status: 400 }
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
@@ -13,13 +23,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // Initialize 0G SDK
-    const RPC_URL = process.env.NEXT_PUBLIC_OG_RPC_URL!;
-    const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC!;
-    const PRIVATE_KEY = process.env.NEXT_PUBLIC_PRIVATE_KEY!;
+    // Validate environment variables
+    const RPC_URL = process.env.NEXT_PUBLIC_OG_RPC_URL;
+    const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC;
+    const PRIVATE_KEY = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
-    if (!PRIVATE_KEY) {
-      throw new Error('Private key not configured');
+    if (!RPC_URL || !INDEXER_RPC || !PRIVATE_KEY) {
+      return NextResponse.json(
+        { error: '0G Storage configuration missing' },
+        { status: 500 }
+      );
     }
 
     const provider = new ethers.JsonRpcProvider(RPC_URL);
@@ -32,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Create temporary file path
     const tempDir = join(process.cwd(), 'temp');
-    const tempPath = join(tempDir, file.name);
+    const tempPath = join(tempDir, `upload-${Date.now()}-${file.name}`);
     
     // Ensure temp directory exists
     const fs = await import('fs');
@@ -59,7 +72,9 @@ export async function POST(request: NextRequest) {
     await zgFile.close();
 
     // Clean up temp file
-    fs.unlinkSync(tempPath);
+    if (fs.existsSync(tempPath)) {
+      fs.unlinkSync(tempPath);
+    }
 
     return NextResponse.json({
       rootHash: tree?.rootHash() ?? '',

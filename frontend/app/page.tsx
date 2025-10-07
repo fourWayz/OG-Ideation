@@ -16,15 +16,6 @@ export default function HomePage() {
   const [showRegistration, setShowRegistration] = useState(false);
   const [registrationChecked, setRegistrationChecked] = useState(false);
 
-  console.log('🔄 Page State:', {
-    isConnected,
-    address,
-    isRegistered,
-    isLoading,
-    isFetched,
-    showRegistration,
-    registrationChecked
-  });
 
   // Only check registration status after we have all required data
   useEffect(() => {

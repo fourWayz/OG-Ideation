@@ -38,7 +38,7 @@ export function RegistrationModal({ isOpen, onClose, onSuccess }: RegistrationMo
       const tx = await contract.registerUser(address, username.trim());
       
       toast.loading('Registering on blockchain...', { id: 'register' });
-      console.log('Transaction sent:', tx.hash);
+      // console.log('Transaction sent:', tx.hash);
       
       // Wait for transaction confirmation
       const receipt = await tx.wait();
