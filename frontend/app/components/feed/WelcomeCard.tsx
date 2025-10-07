@@ -3,44 +3,45 @@ import { Sparkles, Users, Zap, Shield } from 'lucide-react';
 
 export function WelcomeCard() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-2xl mx-auto text-center">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8">
+      <div className="max-w-4xl mx-auto text-center">
         {/* Hero Section */}
-        <div className="relative mb-8">
-          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg blur opacity-20"></div>
-          <div className="relative bg-white/80 backdrop-blur-xl rounded-2xl p-8 border border-gray-200/50 shadow-2xl">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
-              <Sparkles className="w-10 h-10 text-white" />
+        <div className="relative mb-12">
+          <div className="glass-card rounded-3xl p-12">
+            <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-r from-white/30 to-white/10 rounded-2xl flex items-center justify-center border border-white/20 backdrop-blur-sm">
+              <Sparkles className="w-12 h-12 text-white" />
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-4">
+            <h1 className="text-5xl md:text-6xl font-bold text-white text-glow mb-6">
               Welcome to ChainChat
             </h1>
             
-            <p className="text-xl text-gray-600 mb-8 max-w-md mx-auto">
+            <p className="text-xl text-white/80 mb-8 max-w-md mx-auto leading-relaxed">
               The next-generation social platform powered by AI and blockchain technology.
             </p>
 
             <div className="flex justify-center">
-              <ConnectButton />
+              <div className="glass rounded-2xl">
+                <ConnectButton />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <FeatureCard
-            icon={<Zap className="w-6 h-6" />}
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <GlassFeatureCard
+            icon={<Zap className="w-8 h-8" />}
             title="AI Powered"
             description="Personalized feeds powered by OG Chain's inference engine"
           />
-          <FeatureCard
-            icon={<Shield className="w-6 h-6" />}
+          <GlassFeatureCard
+            icon={<Shield className="w-8 h-8" />}
             title="Decentralized"
             description="Your data, your control. Built on blockchain technology"
           />
-          <FeatureCard
-            icon={<Users className="w-6 h-6" />}
+          <GlassFeatureCard
+            icon={<Users className="w-8 h-8" />}
             title="Earn Rewards"
             description="Get rewarded for your content and engagement"
           />
@@ -50,14 +51,14 @@ export function WelcomeCard() {
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function GlassFeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="bg-white/50 backdrop-blur-lg rounded-xl p-6 border border-gray-200/30 shadow-sm hover:shadow-md transition-shadow">
-      <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center text-indigo-600 mb-4">
+    <div className="glass-card rounded-2xl p-8 text-center group hover:bg-white/20 transition-all duration-300 hover:scale-105">
+      <div className="w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 border border-white/20">
         {icon}
       </div>
-      <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
+      <h3 className="font-semibold text-white text-xl mb-3">{title}</h3>
+      <p className="text-white/70 leading-relaxed">{description}</p>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
 import { useContract } from '@/app/hooks/useContract';
 import { X, User, Sparkles } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -15,9 +15,16 @@ interface RegistrationModalProps {
 export function RegistrationModal({ isOpen, onClose, onSuccess }: RegistrationModalProps) {
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { contract } = useContract();
-  const publicClient = usePublicClient();
+
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setUsername('');
+      setIsLoading(false);
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,15 +32,21 @@ export function RegistrationModal({ isOpen, onClose, onSuccess }: RegistrationMo
 
     setIsLoading(true);
     try {
+      console.log('Starting registration for:', username);
+      
       // Call the registerUser function from the contract
       const tx = await contract.registerUser(address, username.trim());
-      console.log(tx, 'Registration transaction sent');
-      toast.loading('Registering...', { id: 'register' });
+      
+      toast.loading('Registering on blockchain...', { id: 'register' });
+      console.log('Transaction sent:', tx.hash);
       
       // Wait for transaction confirmation
-      await tx.wait();
+      const receipt = await tx.wait();
+      console.log('Transaction confirmed:', receipt);
       
       toast.success('Registration successful! Welcome to ChainChat!', { id: 'register' });
+      console.log('Registration completed successfully');
+      
       onSuccess();
       onClose();
       setUsername('');
@@ -43,8 +56,11 @@ export function RegistrationModal({ isOpen, onClose, onSuccess }: RegistrationMo
       // Handle specific error cases
       if (error?.message?.includes('User is already registered')) {
         toast.error('This wallet is already registered', { id: 'register' });
+        onSuccess(); // User is actually registered, proceed
       } else if (error?.message?.includes('Username required')) {
         toast.error('Please enter a username', { id: 'register' });
+      } else if (error?.message?.includes('user rejected transaction')) {
+        toast.error('Transaction was cancelled', { id: 'register' });
       } else {
         toast.error('Registration failed. Please try again.', { id: 'register' });
       }
@@ -56,80 +72,82 @@ export function RegistrationModal({ isOpen, onClose, onSuccess }: RegistrationMo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full animate-scale-in">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="glass-card rounded-3xl max-w-md w-full animate-scale-in">
         {/* Header */}
-        <div className="relative p-6 border-b border-gray-100">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
+        <div className="relative p-8 border-b border-white/20">
+          <div className="flex items-center space-x-4">
+            <div className="w-14 h-14 bg-gradient-to-r from-white/30 to-white/10 rounded-2xl flex items-center justify-center border border-white/20">
+              <Sparkles className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Join ChainChat</h2>
-              <p className="text-gray-600 text-sm">Create your account to get started</p>
+              <h2 className="text-2xl font-bold text-white mb-1">Join ChainChat</h2>
+              <p className="text-white/70">Create your account to get started</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+            className="absolute top-6 right-6 p-2 text-white/60 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+            disabled={isLoading}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="username" className="block text-sm font-medium text-white/80 mb-3">
               Choose a username
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
               <input
                 id="username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                className="w-full pl-12 pr-4 py-4 glass-input rounded-xl focus:ring-2 focus:ring-white/50 text-white placeholder-white/40 transition-colors"
                 required
                 minLength={3}
                 maxLength={30}
                 pattern="[a-zA-Z0-9_]+"
                 title="Username can only contain letters, numbers, and underscores"
                 disabled={isLoading}
+                autoFocus
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2">
-              Username must be 3-30 characters and can only contain letters, numbers, and underscores
+            <p className="text-xs text-white/50 mt-2">
+              Username must be 3-30 characters (letters, numbers, underscores only)
             </p>
           </div>
 
           {/* Benefits */}
-          <div className="bg-blue-50 rounded-lg p-4 space-y-2">
-            <h3 className="font-semibold text-blue-900 text-sm">You'll receive:</h3>
-            <ul className="text-blue-700 text-sm space-y-1">
+          <div className="bg-white/10 rounded-xl p-4 space-y-2 border border-white/20">
+            <h3 className="font-semibold text-white text-sm">You'll receive:</h3>
+            <ul className="text-white/70 text-sm space-y-1">
               <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 <span>100 CC token signup bonus</span>
               </li>
               <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 <span>10 free posts to get started</span>
               </li>
               <li className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                 <span>AI-powered personalized feed</span>
               </li>
             </ul>
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-3 pt-4">
+          <div className="flex space-x-4 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-4 border border-white/20 text-white/80 rounded-xl font-medium hover:bg-white/10 transition-colors disabled:opacity-50"
               disabled={isLoading}
             >
               Cancel
@@ -137,7 +155,7 @@ export function RegistrationModal({ isOpen, onClose, onSuccess }: RegistrationMo
             <button
               type="submit"
               disabled={!username.trim() || isLoading}
-              className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-4 bg-gradient-to-r from-white/30 to-white/10 text-white rounded-xl font-semibold hover:bg-white/20 border border-white/20 hover:border-white/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Registering...' : 'Create Account'}
             </button>
