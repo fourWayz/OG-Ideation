@@ -27,8 +27,8 @@ contract ChainchatAI is ReentrancyGuard, Ownable {
 
     struct Post {
         address author;
-        string contentCID; // OG Storage/IPFS CID
-        string imageCID; // OG Storage/IPFS CID (optional)
+        string contentCID; // OG Storage CID
+        string imageCID; // OG Storage CID (optional)
         uint256 timestamp;
         uint256 likes;
         uint256 commentsCount;
@@ -38,7 +38,7 @@ contract ChainchatAI is ReentrancyGuard, Ownable {
 
     struct Comment {
         address commenter;
-        string content; // Consider CID in future if comments are large
+        string content;
         uint256 timestamp;
     }
 
@@ -47,7 +47,7 @@ contract ChainchatAI is ReentrancyGuard, Ownable {
     uint256 public postCost = 10 * 10 ** 18;
     uint256 public commentCost = 5 * 10 ** 18;
     uint256 public signupBonus = 100 * 10 ** 18;
-    uint256 public referralBonus = 50 * 10 ** 18; // (currently unused in functions below)
+    uint256 public referralBonus = 50 * 10 ** 18; 
 
     // Engagement rewards (per unit)
     uint256 public rewardPerPost = 2 * 10 ** 18;
