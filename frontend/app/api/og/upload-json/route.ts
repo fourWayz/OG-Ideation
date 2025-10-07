@@ -39,9 +39,9 @@ export async function POST(request: NextRequest) {
     const indexer = new Indexer(INDEXER_RPC);
 
     // Create temporary file with JSON data
-    const tempDir = join(process.cwd(), 'temp');
+    const tempDir = '/tmp';
     const tempPath = join(tempDir, `json-upload-${Date.now()}.json`);
-    
+
     // Ensure temp directory exists
     const fs = await import('fs');
     if (!fs.existsSync(tempDir)) {
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     // Upload to 0G Storage
     const zgFile = await ZgFile.fromFilePath(tempPath);
     const [tree, treeErr] = await zgFile.merkleTree();
-    
+
     if (treeErr !== null) {
       throw new Error(`Error generating Merkle tree: ${treeErr}`);
     }
