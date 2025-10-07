@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     const INDEXER_RPC = process.env.NEXT_PUBLIC_INDEXER_RPC;
-    
+
     if (!INDEXER_RPC) {
       return NextResponse.json(
         { error: '0G Storage configuration missing' },
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     }
 
     const indexer = new Indexer(INDEXER_RPC);
-    const downloadsDir = join(process.cwd(), 'downloads');
+    const downloadsDir = '/tmp';
     const outputPath = join(downloadsDir, `${cid}.json`);
 
     const fs = await import('fs');
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     // Download from 0G Storage
     const err = await indexer.download(cid, outputPath, true);
-    
+
     if (err !== null) {
       throw new Error(`Download error: ${err}`);
     }
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     // Read and parse the JSON file
     const fileBuffer = fs.readFileSync(outputPath);
     const jsonData = JSON.parse(fileBuffer.toString());
-    
+
     // Clean up
     if (fs.existsSync(outputPath)) {
       fs.unlinkSync(outputPath);
