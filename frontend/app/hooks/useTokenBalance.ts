@@ -5,14 +5,8 @@ import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
 import { useContract } from './useContract';
 import { CC_TOKEN_ADDRESS } from '../lib/constants';
+import tokenABI from '@/app/lib/abis/CCToken.json';
 
-// ERC20 ABI for basic token functions
-const tokenABI = [
-  "function balanceOf(address owner) view returns (uint256)",
-  "function decimals() view returns (uint8)",
-  "function symbol() view returns (string)",
-  "function name() view returns (string)"
-];
 
 export function useTokenBalance(address?: string) {
   const { contract } = useContract();
@@ -21,43 +15,37 @@ export function useTokenBalance(address?: string) {
   const targetAddress = address || userAddress;
 
   // Get CC token balance
-  const { data: balance = 0, isLoading: balanceLoading } = useQuery({
+ const { data: balance = '0', isLoading: balanceLoading } = useQuery({
     queryKey: ['tokenBalance', targetAddress],
     queryFn: async () => {
-      if (!targetAddress) return 0;
+      if (!targetAddress) return '0';
 
       try {
-        // Get token address from contract
-        // const tokenAddress = await contract?.ccToken();
-        // if (!tokenAddress) return 0;
-
-        // Create token contract instance
         const provider = new ethers.BrowserProvider(window.ethereum);
-        const tokenContract = new ethers.Contract(CC_TOKEN_ADDRESS, tokenABI, provider);
-        
-        const balance = await tokenContract.balanceOf(targetAddress);
+        const tokenContract = new ethers.Contract(CC_TOKEN_ADDRESS, tokenABI.abi, provider);
+
+        const bal = await tokenContract.balanceOf(targetAddress);
+        console.log('Raw balance:', bal.toString());
         const decimals = await tokenContract.decimals();
-        
-        // Convert from wei to token units
-        return Number(ethers.formatUnits(balance, decimals));
-      } catch (error) {
-        console.error('Error fetching token balance:', error);
-        return 0;
+
+        return ethers.formatUnits(bal, decimals); // return string
+      } catch (err) {
+        console.error('Error fetching token balance:', err);
+        return '0';
       }
     },
-    enabled: !!targetAddress && !!contract,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    enabled: !!targetAddress,        
+    refetchInterval: 30_000,
   });
 
-  // Get available rewards (simplified - you might want to calculate this from engagement)
+
   const { data: rewards = 0, isLoading: rewardsLoading } = useQuery({
     queryKey: ['availableRewards', targetAddress],
     queryFn: async () => {
       if (!targetAddress || !contract) return 0;
 
       try {
-        // This is a simplified calculation - you might want to implement
-        // the actual reward calculation based on user activity
+       
         const userStats = await contract.getUserStats(targetAddress);
         
         // Calculate potential rewards based on activity since last claim

@@ -32,7 +32,7 @@ export function TokenStats() {
       <div className="space-y-6">
         <div className="flex justify-between items-center py-3 border-b border-white/20">
           <span className="text-white/70">Balance</span>
-          <span className="font-bold text-2xl text-glow">{formatTokenAmount(balance)} CC</span>
+          <span className="font-bold text-2xl text-glow">{balance} CC</span>
         </div>
         
         <div className="flex justify-between items-center py-3 border-b border-white/20">

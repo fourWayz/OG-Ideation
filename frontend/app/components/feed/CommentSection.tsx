@@ -6,6 +6,7 @@ import { usePosts } from '@/app/hooks/usePosts';
 import { MessageCircle, Send, User } from 'lucide-react';
 import { LoadingSpinner } from '@/app/components/ui/LoadingSpinner';
 import { formatDate } from '@/app/lib/utils';
+import toast from 'react-hot-toast';
 
 interface CommentSectionProps {
   postId: string;
@@ -47,6 +48,7 @@ export function CommentSection({ postId, isOpen, onClose }: CommentSectionProps)
 
     try {
       await addComment({ postId, content: comment });
+      toast.success('Comment added!');
       setComment('');
       // Reload comments after adding new one
       loadComments();

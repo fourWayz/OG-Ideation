@@ -1,6 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContract } from './useContract';
 import { useAccount } from 'wagmi';
+import { ethers } from 'ethers';
+import { CC_TOKEN_ADDRESS, CONTRACT_ADDRESS } from '../lib/constants';
+import tokenABI from '@/app/lib/abis/CCToken.json';
+
 
 export interface Post {
   id: string;
@@ -77,7 +81,7 @@ export function usePosts() {
   // Retrieve JSON from 0G via API
   const retrieveJSON = async <T>(rootHash: string): Promise<T> => {
     const response = await fetch(`/api/og/retrieve-json?cid=${rootHash}`);
-    
+
     if (!response.ok) {
       throw new Error('Retrieve failed');
     }
@@ -103,10 +107,10 @@ export function usePosts() {
         for (let i = 0; i < postCount; i++) {
           try {
             const postData = await contract.getPost(i);
-            
+
             // Retrieve content from API route
             const contentData = await retrieveJSON<{ content: string; timestamp: number }>(postData.contentCID);
-            
+
             let imageUrl;
             if (postData.imageCID) {
               imageUrl = getFileURL(postData.imageCID);
@@ -187,12 +191,12 @@ export function usePosts() {
       if (!contract) throw new Error('Contract not initialized');
 
       // Upload content via API route
-      const contentCID = await uploadJSON({ 
-        content, 
+      const contentCID = await uploadJSON({
+        content,
         timestamp: Date.now(),
         type: 'post'
       });
-      
+
       let imageCID;
       if (image) {
         imageCID = await uploadFile(image);
@@ -213,7 +217,7 @@ export function usePosts() {
   const likePostMutation = useMutation({
     mutationFn: async (postId: string) => {
       if (!contract) throw new Error('Contract not initialized');
-      
+
       const tx = await contract.likePost(postId);
       await tx.wait();
     },
@@ -222,14 +226,26 @@ export function usePosts() {
     },
   });
 
+  const approveCommentCost = async (signer: any, mainContractAddress: string) => {
+    const tokenContract = new ethers.Contract(CC_TOKEN_ADDRESS, tokenABI.abi, signer);
+    const cost = ethers.parseUnits("5", 18); // 5 CCT
+    const tx = await tokenContract.approve(mainContractAddress, cost);
+    await tx.wait();
+  };
+
   // Add comment mutation
   const addCommentMutation = useMutation({
     mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
       if (!contract) throw new Error('Contract not initialized');
-      
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      await approveCommentCost(signer, CONTRACT_ADDRESS);
+
+      console.log('Adding comment to post', postId, 'with content:', content);
       const tx = await contract.addComment(postId, content);
       await tx.wait();
-      
+
       return { postId, content };
     },
     onSuccess: (data) => {
@@ -251,7 +267,7 @@ export function usePosts() {
       for (let i = 0; i < commentsCount; i++) {
         try {
           const commentData = await contract.getComment(postId, i);
-          
+
           // Get commenter profile info
           let commenterProfile;
           try {
@@ -289,7 +305,7 @@ export function usePosts() {
   const sharePostMutation = useMutation({
     mutationFn: async (postId: string) => {
       if (!contract) throw new Error('Contract not initialized');
-      
+
       const tx = await contract.sharePost(postId);
       await tx.wait();
     },
