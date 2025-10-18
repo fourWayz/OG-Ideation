@@ -10,7 +10,7 @@ interface AIGenerationParams {
 export function useAIContent() {
   const generateMutation = useMutation({
     mutationFn: async (params: AIGenerationParams) => {
-      const response = await fetch('/api/ai/generate-post', {
+      const response = await fetch('/api/og/generate-post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

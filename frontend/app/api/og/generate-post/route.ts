@@ -4,13 +4,13 @@ import { createZGComputeNetworkBroker } from "@0glabs/0g-serving-broker";
 
 
 function initializeOGServices() {
-  const privateKey = process.env.PRIVATE_KEY!;
+  const PRIVATE_KEY = process.env.PRIVATE_KEY;
   const rpcUrl = process.env.OG_RPC!;
 
-  if (!privateKey) throw new Error("Missing PRIVATE_KEY");
+  if (!PRIVATE_KEY) throw new Error("Missing PRIVATE_KEY");
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
-  const signer = new ethers.Wallet(privateKey, provider);
+  const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
   return { signer };
 }
