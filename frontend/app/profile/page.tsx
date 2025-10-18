@@ -115,7 +115,7 @@ export default function ProfilePage() {
               <span>Token Balance</span>
             </h3>
             <div className="text-3xl font-bold text-gray-900">
-              {formatTokenAmount(user.balance)} CC
+              {formatTokenAmount(Number(user.balance))} CC
             </div>
             <p className="text-gray-600 text-sm mt-2">
               Earn more tokens by creating content and engaging with the community
