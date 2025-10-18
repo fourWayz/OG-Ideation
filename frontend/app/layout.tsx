@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <body className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Header />

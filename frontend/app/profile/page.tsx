@@ -45,7 +45,7 @@ export default function ProfilePage() {
     <>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Cover Photo */}
-        <div className="relative h-48 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl mb-20 overflow-hidden">
+        <div className="relative h-48 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl mb-20 overflow-hidden">
           {user.coverPhoto ? (
             <img 
               src={user.coverPhoto} 
@@ -53,7 +53,7 @@ export default function ProfilePage() {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-indigo-400 to-purple-500"></div>
+            <div className="w-full h-full bg-gradient-to-r from-blue-50 to-indigo-50"></div>
           )}
           
           {/* Profile Picture */}
@@ -63,11 +63,11 @@ export default function ProfilePage() {
                 <img 
                   src={user.profileImage} 
                   alt={user.username}
-                  className="w-32 h-32 rounded-2xl border-4 border-white bg-white object-cover"
+                  className="w-32 h-32 rounded-2xl border-4 border-white bg-white object-cover shadow-lg"
                 />
               ) : (
-                <div className="w-32 h-32 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl border-4 border-white flex items-center justify-center">
-                  <User className="w-12 h-12 text-white" />
+                <div className="w-32 h-32 bg-gradient-to-br from-blue-200 to-indigo-200 rounded-2xl border-4 border-white flex items-center justify-center shadow-lg">
+                  <User className="w-12 h-12 text-gray-600" />
                 </div>
               )}
             </div>
@@ -77,7 +77,7 @@ export default function ProfilePage() {
           <div className="absolute top-6 right-6">
             <button 
               onClick={() => setIsEditModalOpen(true)}
-              className="flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-white transition-colors"
+              className="flex items-center space-x-2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-white hover:shadow-lg border border-white/40 transition-all duration-200 shadow-md"
             >
               <Edit3 className="w-4 h-4" />
               <span>Edit Profile</span>
@@ -88,11 +88,11 @@ export default function ProfilePage() {
         {/* Profile Info */}
         <div className="px-8">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-500 mb-2">{user.username}</h1>
-            <p className="text-gray-600 text-lg mb-4">{user.bio || "No bio yet. Tell everyone about yourself!"}</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{user.username}</h1>
+            <p className="text-gray-700 text-lg mb-4">{user.bio || "No bio yet. Tell everyone about yourself!"}</p>
             
             {/* Wallet Address */}
-            <div className="flex items-center space-x-2 text-gray-500">
+            <div className="flex items-center space-x-2 text-gray-600">
               <Mail className="w-4 h-4" />
               <span className="font-mono">{truncateAddress(user.userAddress || address || '')}</span>
             </div>
@@ -107,9 +107,9 @@ export default function ProfilePage() {
           </div>
 
           {/* Token Balance */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 mb-6">
+          <div className="glass-card rounded-2xl p-6 mb-6">
             <h3 className="font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-              <div className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full flex items-center justify-center shadow-sm">
                 <span className="text-white text-xs font-bold">CC</span>
               </div>
               <span>Token Balance</span>
@@ -124,13 +124,13 @@ export default function ProfilePage() {
 
           {/* Interests */}
           {user.interests && user.interests.length > 0 ? (
-            <div className="bg-white rounded-2xl p-6 border border-gray-100">
+            <div className="glass rounded-2xl p-6">
               <h3 className="font-semibold text-gray-900 mb-4">Interests</h3>
               <div className="flex flex-wrap gap-2">
                 {user.interests.map((interest:any, index:any) => (
                   <span 
                     key={index}
-                    className="px-3 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium"
+                    className="px-3 py-2 bg-blue-100/80 text-blue-700 rounded-full text-sm font-medium backdrop-blur-sm border border-blue-200/50"
                   >
                     {interest}
                   </span>
@@ -138,9 +138,9 @@ export default function ProfilePage() {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-50 rounded-2xl p-6 text-center">
-              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                <User className="w-6 h-6 text-gray-400" />
+            <div className="glass rounded-2xl p-6 text-center">
+              <div className="w-12 h-12 bg-gray-100/80 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
+                <User className="w-6 h-6 text-gray-500" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Add Your Interests</h3>
               <p className="text-gray-600 text-sm mb-4">
@@ -148,7 +148,7 @@ export default function ProfilePage() {
               </p>
               <button 
                 onClick={() => setIsEditModalOpen(true)}
-                className="text-indigo-600 hover:text-indigo-700 font-medium text-sm"
+                className="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
               >
                 Edit profile to add interests
               </button>
@@ -170,7 +170,7 @@ export default function ProfilePage() {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-white rounded-xl p-4 text-center border border-gray-100 shadow-sm">
+    <div className="glass rounded-xl p-4 text-center">
       <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
       <div className="text-sm text-gray-600">{label}</div>
     </div>

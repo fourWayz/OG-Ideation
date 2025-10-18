@@ -8,7 +8,6 @@ import { useAIContent } from '@/app/hooks/useAIContent';
 import { useUserProfile } from '@/app/hooks/useUserProfile';
 import { toast } from 'react-hot-toast';
 
-
 interface AIOptionCardProps {
   icon: React.ReactNode;
   title: string;
@@ -17,7 +16,6 @@ interface AIOptionCardProps {
   disabled?: boolean;
   color: 'blue' | 'green' | 'orange';
 }
-
 
 export function CreatePostCard() {
   const [content, setContent] = useState('');
@@ -161,9 +159,9 @@ export function CreatePostCard() {
   };
 
   const getCharCountColor = () => {
-    if (charCount > 240) return 'text-red-400';
-    if (charCount > 200) return 'text-yellow-400';
-    return 'text-white/50';
+    if (charCount > 240) return 'text-red-500';
+    if (charCount > 200) return 'text-yellow-500';
+    return 'text-gray-500';
   };
 
   return (
@@ -172,19 +170,19 @@ export function CreatePostCard() {
         {/* Header with Visual Feedback */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl flex items-center justify-center border border-blue-500/30 animate-pulse">
+            <div className="w-10 h-10 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-xl flex items-center justify-center border border-white/40 shadow-sm">
               <span className="text-lg">💬</span>
             </div>
             <div>
-              <h3 className="font-semibold text-white text-lg">Create Post</h3>
-              <p className="text-white/60 text-sm">Share your thoughts with the community</p>
+              <h3 className="font-semibold text-gray-900 text-lg">Create Post</h3>
+              <p className="text-gray-600 text-sm">Share your thoughts with the community</p>
             </div>
           </div>
           
           {/* Online Indicator */}
-          <div className="flex items-center space-x-2 px-3 py-1 bg-green-500/20 rounded-full border border-green-500/30">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-green-300 text-xs font-medium">Online</span>
+          <div className="flex items-center space-x-2 px-3 py-1 bg-green-100/80 rounded-full border border-green-200/60 backdrop-blur-sm">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-green-700 text-xs font-medium">Online</span>
           </div>
         </div>
 
@@ -195,7 +193,7 @@ export function CreatePostCard() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind? Share your thoughts, ask a question, or let AI help you get started..."
-            className="w-full resize-none glass-input rounded-2xl focus:ring-2 focus:ring-blue-500/50 text-white placeholder-white/40 min-h-[120px] p-6 text-lg leading-relaxed transition-all duration-300 font-medium backdrop-blur-sm group-hover:border-white/40"
+            className="w-full resize-none glass-input rounded-2xl focus:ring-2 focus:ring-blue-300 text-gray-900 placeholder-gray-500 min-h-[120px] p-6 text-lg leading-relaxed transition-all duration-300 font-medium backdrop-blur-sm group-hover:border-white/60"
             disabled={isCreating}
             style={{ 
               fontFamily: 'var(--font-inter), system-ui, sans-serif',
@@ -210,7 +208,7 @@ export function CreatePostCard() {
               <button
                 type="button"
                 onClick={enhanceWithAI}
-                className="flex items-center space-x-1 px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 rounded-lg text-purple-300 hover:text-purple-200 transition-all duration-200 text-sm backdrop-blur-sm hover:scale-105"
+                className="flex items-center space-x-1 px-3 py-1 bg-purple-100/80 hover:bg-purple-200/80 border border-purple-200/60 rounded-lg text-purple-700 hover:text-purple-800 transition-all duration-200 text-sm backdrop-blur-sm hover:scale-105"
                 title="Enhance with AI"
               >
                 <Wand2 className="w-3 h-3" />
@@ -219,16 +217,16 @@ export function CreatePostCard() {
             )}
             
             {/* Character Count */}
-            <div className={`text-sm bg-white/10 backdrop-blur-sm px-2 py-1 rounded border border-white/20 ${getCharCountColor()}`}>
+            <div className={`text-sm bg-white/80 backdrop-blur-sm px-2 py-1 rounded border border-white/60 ${getCharCountColor()}`}>
               {charCount}/280
             </div>
           </div>
 
           {/* AI Generating Indicator */}
           {isAIGenerating && (
-            <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-              <div className="flex items-center space-x-3 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg text-blue-300">
-                <div className="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin" />
+            <div className="absolute inset-0 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+              <div className="flex items-center space-x-3 px-4 py-2 bg-blue-100/80 border border-blue-200/60 rounded-lg text-blue-700">
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                 <span className="text-sm">AI is crafting your content...</span>
               </div>
             </div>
@@ -237,7 +235,7 @@ export function CreatePostCard() {
         
         {/* Enhanced Image Preview */}
         {imagePreview && (
-          <div className="relative rounded-2xl overflow-hidden border border-white/20 group animate-in zoom-in duration-300">
+          <div className="relative rounded-2xl overflow-hidden border border-white/40 group animate-in zoom-in duration-300">
             <img 
               src={imagePreview} 
               alt="Preview" 
@@ -257,8 +255,9 @@ export function CreatePostCard() {
         )}
         
         {/* Enhanced Action Bar */}
-        <div className="flex items-center justify-between pt-6 border-t border-white/20">
-          <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-gray-200/50">
+          {/* Left Actions */}
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {/* File Upload Buttons */}
             <input
               type="file"
@@ -271,22 +270,22 @@ export function CreatePostCard() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center space-x-2 px-4 py-3 text-white/80 hover:text-white hover:bg-blue-500/20 rounded-xl transition-all duration-200 disabled:opacity-50 backdrop-blur-sm border border-transparent hover:border-blue-500/30 group"
+              className="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:text-gray-900 hover:bg-white/80 rounded-xl transition-all duration-200 disabled:opacity-50 backdrop-blur-sm border border-transparent hover:border-white/60 group flex-shrink-0"
               disabled={isCreating}
             >
               <Image className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">Photo</span>
+              <span className="text-sm font-medium hidden sm:inline">Photo</span>
             </button>
             
             <button
               type="button"
-              className="flex items-center space-x-2 px-4 py-3 text-white/40 rounded-xl cursor-not-allowed backdrop-blur-sm group"
+              className="flex items-center space-x-2 px-4 py-3 text-gray-400 rounded-xl cursor-not-allowed backdrop-blur-sm group flex-shrink-0"
               disabled
               title="Coming soon - Video uploads"
             >
               <Video className="w-5 h-5" />
-              <span className="text-sm font-medium">Video</span>
-              <span className="text-xs bg-yellow-500/20 text-yellow-300 px-1 rounded">Soon</span>
+              <span className="text-sm font-medium hidden sm:inline">Video</span>
+              <span className="text-xs bg-yellow-100 text-yellow-700 px-1 rounded hidden sm:inline">Soon</span>
             </button>
 
             {/* AI Assistant Button */}
@@ -294,28 +293,30 @@ export function CreatePostCard() {
               type="button"
               onClick={() => setShowAIOptions(!showAIOptions)}
               disabled={isCreating || isAIGenerating}
-              className="flex items-center space-x-2 px-4 py-3 text-purple-300 hover:text-purple-200 hover:bg-purple-500/20 rounded-xl transition-all duration-200 disabled:opacity-50 backdrop-blur-sm border border-purple-500/30 hover:border-purple-500/50 group"
+              className="flex items-center space-x-2 px-4 py-3 text-purple-700 hover:text-purple-800 hover:bg-purple-100/80 rounded-xl transition-all duration-200 disabled:opacity-50 backdrop-blur-sm border border-purple-200/60 hover:border-purple-300/80 group flex-shrink-0"
             >
               <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-medium">AI Assistant</span>
+              <span className="text-sm font-medium hidden sm:inline">AI Assistant</span>
             </button>
           </div>
           
-          {/* Submit Button with Enhanced States */}
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={(!content.trim() && !selectedImage) || isCreating || isAIGenerating}
-            className="flex items-center space-x-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none backdrop-blur-sm border border-blue-500/30 hover:border-blue-400/50 animate-glow"
+            className="w-full sm:w-auto flex items-center justify-center space-x-3 bg-white/80 backdrop-blur-md text-gray-900 px-6 sm:px-8 py-3 rounded-xl font-semibold hover:bg-white hover:shadow-lg transform hover:scale-105 active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none border border-white/40 hover:border-white/60 shadow-md flex-shrink-0"
           >
             {isCreating ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Posting...</span>
+                <div className="w-4 h-4 border-2 border-gray-700 border-t-transparent rounded-full animate-spin" />
+                <span className="hidden sm:inline">Posting...</span>
+                <span className="sm:hidden">Posting...</span>
               </>
             ) : (
               <>
                 <Send className="w-4 h-4" />
-                <span>Post to ChainChat</span>
+                <span className="hidden sm:inline">Post to ChainChat</span>
+                <span className="sm:hidden">Post</span>
               </>
             )}
           </button>
@@ -323,20 +324,20 @@ export function CreatePostCard() {
 
         {/* Enhanced AI Options Panel */}
         {showAIOptions && (
-          <div className="glass rounded-2xl p-6 border border-white/20 animate-in fade-in duration-300">
+          <div className="glass rounded-2xl p-6 border border-white/40 animate-in fade-in duration-300">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center border border-purple-500/30">
-                  <Zap className="w-4 h-4 text-purple-400" />
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center border border-purple-200/60">
+                  <Zap className="w-4 h-4 text-purple-600" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white">AI Content Assistant</h4>
-                  <p className="text-white/60 text-sm">Let AI help you create engaging content</p>
+                  <h4 className="font-semibold text-gray-900">AI Content Assistant</h4>
+                  <p className="text-gray-600 text-sm">Let AI help you create engaging content</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowAIOptions(false)}
-                className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"
+                className="text-gray-500 hover:text-gray-700 transition-colors p-1 hover:bg-white/60 rounded"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -371,8 +372,8 @@ export function CreatePostCard() {
               />
             </div>
 
-            <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
-              <p className="text-white/70 text-xs text-center">
+            <div className="mt-6 p-4 bg-white/60 rounded-lg border border-white/40 backdrop-blur-sm">
+              <p className="text-gray-600 text-xs text-center">
                 ✨ Powered by OG Chain Inference • Personalized based on your interests
               </p>
             </div>
@@ -393,9 +394,9 @@ function AIOptionCard({
   color,
 }: AIOptionCardProps) {
   const colorClasses: Record<'blue' | 'green' | 'orange', string> = {
-    blue: 'from-blue-500/20 to-blue-600/20 border-blue-500/30 hover:border-blue-400/50',
-    green: 'from-green-500/20 to-green-600/20 border-green-500/30 hover:border-green-400/50',
-    orange: 'from-orange-500/20 to-orange-600/20 border-orange-500/30 hover:border-orange-400/50',
+    blue: 'from-blue-100/80 to-blue-200/80 border-blue-200/60 hover:border-blue-300/80 text-blue-700',
+    green: 'from-green-100/80 to-green-200/80 border-green-200/60 hover:border-green-300/80 text-green-700',
+    orange: 'from-orange-100/80 to-orange-200/80 border-orange-200/60 hover:border-orange-300/80 text-orange-700',
   };
 
   return (
@@ -405,8 +406,8 @@ function AIOptionCard({
       className={`flex flex-col items-center p-5 bg-gradient-to-br ${colorClasses[color]} rounded-xl transition-all duration-300 disabled:opacity-50 group hover:scale-105 border backdrop-blur-sm`}
     >
       <div className="text-2xl mb-3 group-hover:scale-110 transition-transform">{icon}</div>
-      <span className="text-white text-sm font-semibold text-center mb-1">{title}</span>
-      <span className="text-white/60 text-xs text-center">{description}</span>
+      <span className="text-sm font-semibold text-center mb-1">{title}</span>
+      <span className="text-opacity-80 text-xs text-center">{description}</span>
     </button>
   );
 }

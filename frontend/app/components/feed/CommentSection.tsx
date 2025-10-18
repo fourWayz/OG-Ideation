@@ -60,7 +60,7 @@ export function CommentSection({ postId, isOpen, onClose }: CommentSectionProps)
   if (!isOpen) return null;
 
   return (
-    <div className="border-t border-gray-100 pt-4 mt-4">
+    <div className="border-t border-gray-200/50 pt-4 mt-4">
       {/* Comment Input */}
       <form onSubmit={handleSubmit} className="flex space-x-3 mb-4">
         <div className="flex-1">
@@ -69,14 +69,14 @@ export function CommentSection({ postId, isOpen, onClose }: CommentSectionProps)
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write a comment..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="glass-input w-full px-4 py-3 rounded-full text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-300 focus:border-blue-300 transition-all duration-200"
             disabled={isCommenting}
           />
         </div>
         <button
           type="submit"
           disabled={!comment.trim() || isCommenting}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="px-5 py-3 bg-white/80 backdrop-blur-md text-gray-700 rounded-full hover:bg-white hover:shadow-lg border border-white/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-md flex items-center justify-center"
         >
           {isCommenting ? <LoadingSpinner size="sm" /> : <Send className="w-4 h-4" />}
         </button>
@@ -85,7 +85,7 @@ export function CommentSection({ postId, isOpen, onClose }: CommentSectionProps)
       {/* View Comments Toggle */}
       <button
         onClick={() => setShowComments(!showComments)}
-        className="flex items-center space-x-2 text-gray-600 hover:text-indigo-600 mb-4 transition-colors"
+        className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 mb-4 transition-colors duration-200"
       >
         <MessageCircle className="w-4 h-4" />
         <span className="text-sm font-medium">
@@ -105,7 +105,7 @@ export function CommentSection({ postId, isOpen, onClose }: CommentSectionProps)
               <CommentItem key={comment.id} comment={comment} />
             ))
           ) : (
-            <div className="text-center py-6 text-gray-500 bg-gray-50 rounded-lg">
+            <div className="text-center py-6 text-gray-500 glass rounded-2xl">
               <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No comments yet. Be the first to comment!</p>
             </div>
@@ -124,22 +124,22 @@ function CommentItem({ comment }: { comment: any }) {
         <img 
           src={comment.commenterProfile.profileImage} 
           alt={comment.commenterProfile.username}
-          className="w-8 h-8 rounded-full flex-shrink-0"
+          className="w-8 h-8 rounded-full flex-shrink-0 border border-white/40 shadow-sm"
         />
       ) : (
-        <div className="w-8 h-8 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+        <div className="w-8 h-8 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-full flex items-center justify-center text-gray-700 text-xs font-semibold flex-shrink-0 border border-white/40 shadow-sm">
           {comment.commenter.slice(2, 4).toUpperCase()}
         </div>
       )}
       
       {/* Comment Content */}
       <div className="flex-1 min-w-0">
-        <div className="bg-gray-50 rounded-2xl px-4 py-3">
+        <div className="glass rounded-2xl px-4 py-3">
           <div className="flex items-baseline space-x-2 mb-1">
             <span className="font-semibold text-gray-900 text-sm">
               {comment.commenterProfile?.username || `${comment.commenter.slice(0, 6)}...${comment.commenter.slice(-4)}`}
             </span>
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-gray-600">
               {formatDate(comment.timestamp)}
             </span>
           </div>
@@ -148,10 +148,10 @@ function CommentItem({ comment }: { comment: any }) {
         
         {/* Comment Actions */}
         <div className="flex items-center space-x-4 mt-2 px-1">
-          <button className="text-xs text-gray-500 hover:text-indigo-600 transition-colors">
+          <button className="text-xs text-gray-600 hover:text-blue-600 transition-colors duration-200">
             Like
           </button>
-          <button className="text-xs text-gray-500 hover:text-indigo-600 transition-colors">
+          <button className="text-xs text-gray-600 hover:text-blue-600 transition-colors duration-200">
             Reply
           </button>
         </div>

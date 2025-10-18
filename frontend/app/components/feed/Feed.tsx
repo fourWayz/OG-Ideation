@@ -10,15 +10,16 @@ export function Feed() {
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner size="lg" className="border-gray-400" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-12 text-gray-500">
-        Error loading posts
+      <div className="text-center py-12 text-gray-600 glass rounded-2xl p-8">
+        <p className="text-lg font-medium text-gray-700 mb-2">Error loading posts</p>
+        <p className="text-sm text-gray-600">Please try refreshing the page</p>
       </div>
     );
   }

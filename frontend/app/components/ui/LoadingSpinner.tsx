@@ -18,7 +18,7 @@ export function LoadingSpinner({ size = 'md', className }: LoadingSpinnerProps) 
   return (
     <div
       className={cn(
-        'animate-spin rounded-full border-2 border-gray-300 border-t-indigo-600',
+        'animate-spin rounded-full border-2 border-gray-300 border-t-blue-500',
         sizeClasses[size],
         className
       )}
@@ -29,23 +29,23 @@ export function LoadingSpinner({ size = 'md', className }: LoadingSpinnerProps) 
 // Skeleton loading components for better UX
 export function PostSkeleton() {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-pulse">
+    <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="flex items-center space-x-3 mb-4">
-        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+        <div className="w-10 h-10 bg-gray-200/80 rounded-full backdrop-blur-sm"></div>
         <div className="space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-24"></div>
-          <div className="h-3 bg-gray-200 rounded w-16"></div>
+          <div className="h-4 bg-gray-200/80 rounded w-24 backdrop-blur-sm"></div>
+          <div className="h-3 bg-gray-200/80 rounded w-16 backdrop-blur-sm"></div>
         </div>
       </div>
       <div className="space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-full"></div>
-        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div className="h-4 bg-gray-200/80 rounded w-full backdrop-blur-sm"></div>
+        <div className="h-4 bg-gray-200/80 rounded w-3/4 backdrop-blur-sm"></div>
+        <div className="h-4 bg-gray-200/80 rounded w-1/2 backdrop-blur-sm"></div>
       </div>
-      <div className="flex space-x-4 mt-4 pt-4 border-t border-gray-100">
-        <div className="h-8 bg-gray-200 rounded w-16"></div>
-        <div className="h-8 bg-gray-200 rounded w-16"></div>
-        <div className="h-8 bg-gray-200 rounded w-16"></div>
+      <div className="flex space-x-4 mt-4 pt-4 border-t border-gray-200/50">
+        <div className="h-8 bg-gray-200/80 rounded w-16 backdrop-blur-sm"></div>
+        <div className="h-8 bg-gray-200/80 rounded w-16 backdrop-blur-sm"></div>
+        <div className="h-8 bg-gray-200/80 rounded w-16 backdrop-blur-sm"></div>
       </div>
     </div>
   );
@@ -63,27 +63,27 @@ export function FeedSkeleton() {
 
 export function ProfileSkeleton() {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-pulse">
+    <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="flex items-center space-x-4 mb-6">
-        <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
+        <div className="w-20 h-20 bg-gray-200/80 rounded-full backdrop-blur-sm"></div>
         <div className="space-y-2 flex-1">
-          <div className="h-6 bg-gray-200 rounded w-32"></div>
-          <div className="h-4 bg-gray-200 rounded w-48"></div>
-          <div className="h-4 bg-gray-200 rounded w-24"></div>
+          <div className="h-6 bg-gray-200/80 rounded w-32 backdrop-blur-sm"></div>
+          <div className="h-4 bg-gray-200/80 rounded w-48 backdrop-blur-sm"></div>
+          <div className="h-4 bg-gray-200/80 rounded w-24 backdrop-blur-sm"></div>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div className="text-center">
-          <div className="h-6 bg-gray-200 rounded w-16 mx-auto mb-1"></div>
-          <div className="h-4 bg-gray-200 rounded w-12 mx-auto"></div>
+          <div className="h-6 bg-gray-200/80 rounded w-16 mx-auto mb-1 backdrop-blur-sm"></div>
+          <div className="h-4 bg-gray-200/80 rounded w-12 mx-auto backdrop-blur-sm"></div>
         </div>
         <div className="text-center">
-          <div className="h-6 bg-gray-200 rounded w-16 mx-auto mb-1"></div>
-          <div className="h-4 bg-gray-200 rounded w-12 mx-auto"></div>
+          <div className="h-6 bg-gray-200/80 rounded w-16 mx-auto mb-1 backdrop-blur-sm"></div>
+          <div className="h-4 bg-gray-200/80 rounded w-12 mx-auto backdrop-blur-sm"></div>
         </div>
         <div className="text-center">
-          <div className="h-6 bg-gray-200 rounded w-16 mx-auto mb-1"></div>
-          <div className="h-4 bg-gray-200 rounded w-12 mx-auto"></div>
+          <div className="h-6 bg-gray-200/80 rounded w-16 mx-auto mb-1 backdrop-blur-sm"></div>
+          <div className="h-4 bg-gray-200/80 rounded w-12 mx-auto backdrop-blur-sm"></div>
         </div>
       </div>
     </div>
