@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
 import { ethers } from "ethers";
 import { createZGComputeNetworkBroker } from "@0glabs/0g-serving-broker";
 
 
 function initializeOGServices() {
   const PRIVATE_KEY = process.env.PRIVATE_KEY;
-  const rpcUrl = process.env.OG_RPC!;
+  const rpcUrl = process.env.NEXT_PUBLIC_OG_RPC_URL!;
 
   if (!PRIVATE_KEY) throw new Error("Missing PRIVATE_KEY");
 
@@ -21,8 +22,8 @@ export async function POST(req: NextRequest) {
 
     const { signer } = initializeOGServices();
     const broker = await createZGComputeNetworkBroker(signer);
-    const providerAddress = process.env.LLAMA_PROVIDER!;
-
+    const providerAddress = process.env.MEXT_PUBLIC_OG_PROVIDER_ADDRESS!;
+    console.log("Using provider address:", providerAddress);
 
     try {
       await broker.inference.acknowledgeProviderSigner(providerAddress);
@@ -101,31 +102,32 @@ export async function POST(req: NextRequest) {
     };
 
     const prompt = prompts[type as keyof typeof prompts] || prompts.post;
-
-    const headers = await broker.inference.getRequestHeaders(providerAddress, prompt);
-    
-    // Use fetch instead of OpenAI SDK for more flexibility
-    const response = await fetch(`${endpoint}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body: JSON.stringify({
-        model,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.8,
-        max_tokens: 150,
-      }),
+    const openai = new OpenAI({
+      baseURL: endpoint,
+      apiKey: "",
     });
 
-    if (!response.ok) {
-      throw new Error(`AI service error: ${response.statusText}`);
-    }
+    const headers = await broker.inference.getRequestHeaders(providerAddress, prompt);
 
-    const completion = await response.json();
+    const requestHeaders: Record<string, string> = {};
+    Object.entries(headers).forEach(([k, v]) => {
+      if (typeof v === "string") requestHeaders[k] = v;
+    });
+
+    const completion = await openai.chat.completions.create(
+      {
+        model,
+        messages: [{ role: "user", content: prompt }],
+      },
+      {
+        headers: requestHeaders,
+      }
+    );
+
+
     const content = completion.choices[0].message.content || "{}";
-    
+
+    console.log("AI generated content:", content);
     // Validate the response format
     let parsed;
     try {
@@ -156,8 +158,8 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     console.error("AI generation error:", err);
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: err.message || "AI service unavailable",
         fallback: generateFallbackContent()
       },

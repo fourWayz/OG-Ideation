@@ -18,6 +18,7 @@ export function useAIContent() {
         body: JSON.stringify(params),
       });
 
+      console.log("AI service response status:", response);
       if (!response.ok) {
         throw new Error('Failed to generate AI content');
       }
