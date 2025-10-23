@@ -37,7 +37,7 @@ export function Header() {
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-200/30 to-indigo-200/30 rounded-lg blur opacity-50 group-hover:opacity-70 transition duration-300"></div>
             </div>
             <span className="font-bold text-xl text-gray-900 group-hover:text-blue-600 transition-colors">
-              ChainChat
+              ChainChatAI
             </span>
           </Link>
 
@@ -45,8 +45,8 @@ export function Header() {
           {showNavigation && (
             <nav className="hidden md:flex items-center space-x-1">
               <NavLink href="/" icon={Home} label="Feed" isActive={isActive('/')} />
-              <NavLink href="/post/create" icon={PlusCircle} label="Create" isActive={isActive('/post/create')} />
-              <NavLink href="/rewards" icon={Trophy} label="Rewards" isActive={isActive('/rewards')} />
+              <NavLink href="#" icon={PlusCircle} label="Create" isActive={isActive('/post/create')} />
+              <NavLink href="#" icon={Trophy} label="Rewards" isActive={isActive('/rewards')} />
               <NavLink href="/profile" icon={User} label="Profile" isActive={isActive('/profile')} />
             </nav>
           )}
