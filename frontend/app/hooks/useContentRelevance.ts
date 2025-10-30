@@ -17,7 +17,7 @@ export function useContentRelevance() {
 
   const calculateRelevance = async (post: any, userInterests: string[]): Promise<RelevanceScore> => {
     // Send to AI for relevance analysis
-    const response = await fetch('/api/ai/analyze-relevance', {
+    const response = await fetch('/api/og/analyze-relevance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

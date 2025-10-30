@@ -16,7 +16,7 @@ interface ContentAnalysis {
 export function useContentFiltering() {
   const analyzeContent = useMutation({
     mutationFn: async (content: string): Promise<ContentAnalysis> => {
-      const response = await fetch('/api/ai/analyze-content-safety', {
+      const response = await fetch('/api/og/analyze-content-safety', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content }),

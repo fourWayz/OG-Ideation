@@ -107,15 +107,15 @@ export function PostCard({ post }: PostCardProps) {
                 className="w-12 h-12 rounded-2xl border-2 border-white/20"
               />
             ) : (
-              <div className="w-12 h-12 bg-gradient-to-r from-white/30 to-white/10 rounded-2xl flex items-center justify-center text-white font-semibold border border-white/20">
+              <div className="w-12 h-12 bg-gradient-to-r from-white/30 to-white/10 rounded-2xl flex items-center justify-center text-gray-600 font-semibold border border-white/20">
                 {post.author.slice(2, 4).toUpperCase()}
               </div>
             )}
             <div>
-              <div className="font-semibold text-white text-lg">
+              <div className="font-semibold text-gray-600 text-lg">
                 {post.authorProfile?.username || `${post.author.slice(0, 6)}...${post.author.slice(-4)}`}
               </div>
-              <div className="flex items-center space-x-2 text-white/60 text-sm">
+              <div className="flex items-center space-x-2 text-gray/60 text-sm">
                 <span>{new Date(post.timestamp).toLocaleDateString()}</span>
                 {relevanceScore && (
                   <div className={`flex items-center space-x-1 ${getRelevanceColor(relevanceScore.score)}`}>
@@ -129,14 +129,14 @@ export function PostCard({ post }: PostCardProps) {
           </div>
         </div>
         
-        <button className="p-2 text-white/60 hover:text-white rounded-xl hover:bg-white/10 transition-colors">
+        <button className="p-2 text-gray/60 hover:text-white rounded-xl hover:bg-white/10 transition-colors">
           <MoreHorizontal className="w-5 h-5" />
         </button>
       </div>
 
       {/* Content with AI Insights */}
       <div className="mb-6">
-        <p className="text-white/90 text-lg leading-relaxed whitespace-pre-wrap mb-4">
+        <p className="text-gray/90 text-lg leading-relaxed whitespace-pre-wrap mb-4">
           {post.content}
         </p>
         
@@ -144,17 +144,17 @@ export function PostCard({ post }: PostCardProps) {
         {relevanceScore && (
           <div className="bg-white/5 rounded-xl p-4 border border-white/10 mb-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-white/70 text-sm">Content Insights</span>
+              <span className="text-gray/70 text-sm">Content Insights</span>
               <Sparkles className="w-4 h-4 text-purple-400" />
             </div>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-white/60">Engagement:</span>
-                <span className="text-white">{Math.round(relevanceScore.factors.engagement * 100)}%</span>
+                <span className="text-gray/60">Engagement:</span>
+                <span className="text-gray">{Math.round(relevanceScore.factors.engagement * 100)}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white/60">Interest Match:</span>
-                <span className="text-white">{Math.round(relevanceScore.factors.personalInterest * 100)}%</span>
+                <span className="text-gray/60">Interest Match:</span>
+                <span className="text-gray">{Math.round(relevanceScore.factors.personalInterest * 100)}%</span>
               </div>
             </div>
             {relevanceScore.recommendations.length > 0 && (
