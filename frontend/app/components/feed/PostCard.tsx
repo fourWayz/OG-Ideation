@@ -12,10 +12,9 @@ import { Post } from '@/app/hooks/usePosts';
 
 interface PostCardProps {
   post: Post;
-  userInterests: string[];
 }
 
-export function PostCard({ post, userInterests }: PostCardProps) {
+export function PostCard({ post }: PostCardProps) {
   const [isLiking, setIsLiking] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showSmartReplies, setShowSmartReplies] = useState(false);
@@ -32,7 +31,7 @@ export function PostCard({ post, userInterests }: PostCardProps) {
   // Calculate relevance on component mount
   useEffect(() => {
     const loadRelevanceData = async () => {
-      const relevance = await calculateRelevance(post, userInterests);
+      const relevance = await calculateRelevance(post, post.authorProfile?.interests || []);
       setRelevanceScore(relevance);
       
       const analysis = await analyzeContent(post.content);
@@ -40,7 +39,7 @@ export function PostCard({ post, userInterests }: PostCardProps) {
     };
 
     loadRelevanceData();
-  }, [post, userInterests]);
+  }, [post]);
 
   const handleLike = async () => {
     if (!address || isLiking) return;

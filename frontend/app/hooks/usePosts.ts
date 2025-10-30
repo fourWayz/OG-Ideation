@@ -21,6 +21,7 @@ export interface Post {
   authorProfile?: {
     username: string;
     profileImage?: string;
+    interests?: string[];
   };
 }
 
@@ -123,6 +124,7 @@ export function usePosts() {
               authorProfile = {
                 username: authorData.username,
                 profileImage: authorData.profileImage,
+                interests: authorData.interests,
               };
             } catch (error) {
               console.error(`Error fetching author profile for ${postData.author}:`, error);
