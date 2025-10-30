@@ -38,7 +38,7 @@ export function useContentRelevance() {
   };
 
   const calculateFallbackRelevance = (post: any, userInterests: string[]): RelevanceScore => {
-    let engagementScore = Math.min((post.likes + post.commentsCount) / 10, 1);
+    const engagementScore = Math.min((post.likes + post.commentsCount) / 10, 1);
     const hoursAgo = (Date.now() - post.timestamp) / (1000 * 60 * 60);
     const timelinessScore = Math.max(0, 1 - (hoursAgo / 168)); // 1 week decay
     

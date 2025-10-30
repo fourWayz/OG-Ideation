@@ -72,6 +72,7 @@ export async function POST(req: NextRequest) {
                 headers: requestHeaders,
             }
         );
+
         const result = completion.choices[0].message.content || "{}";
 
         const isValid = await broker.inference.processResponse(OG_PROVIDER, result, completion.id);
