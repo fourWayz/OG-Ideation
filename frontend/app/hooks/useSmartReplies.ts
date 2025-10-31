@@ -63,7 +63,7 @@ export function useSmartReplies() {
       postContent,
       context,
     }: { postContent: string; context?: string }): Promise<SmartReply[]> => {
-      const response = await fetch('/api/ai/generate-replies', {
+      const response = await fetch('/api/og/generate-replies', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -87,4 +87,4 @@ export function useSmartReplies() {
     generateReplies: generateReplies.mutateAsync,
     isGenerating: generateReplies.isPending,
   };
-}
+}d
