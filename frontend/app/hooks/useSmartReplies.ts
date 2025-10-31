@@ -42,7 +42,7 @@ export function useSmartReplies() {
     if (contentLower.includes('blockchain') || contentLower.includes('web3') || contentLower.includes('ai')) {
       replies.push({
         id: '4',
-        text: "Interesting take on this technology! How do you see this evolving?",
+        text: "Interesting take on this technology! How do you see this evolving ?",
         tone: 'questioning',
         confidence: 0.75
       });
@@ -87,4 +87,4 @@ export function useSmartReplies() {
     generateReplies: generateReplies.mutateAsync,
     isGenerating: generateReplies.isPending,
   };
-}d
+}
