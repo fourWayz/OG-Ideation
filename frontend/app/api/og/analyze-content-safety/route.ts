@@ -3,14 +3,14 @@ import { ethers } from "ethers";
 import { createZGComputeNetworkBroker } from "@0glabs/0g-serving-broker";
 import OpenAI from "openai";
 
-const OG_PROVIDER = process.env.LLAMA_PROVIDER!;
+const OG_PROVIDER = process.env.MEXT_PUBLIC_OG_PROVIDER_ADDRESS!;
 
 export async function POST(req: NextRequest) {
     try {
         const { content } = await req.json();
 
         const privateKey = process.env.PRIVATE_KEY!;
-        const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL!;
+        const rpcUrl = process.env.NEXT_PUBLIC_OG_RPC_URL!;
 
         const provider = new ethers.JsonRpcProvider(rpcUrl);
         const signer = new ethers.Wallet(privateKey, provider);

@@ -93,183 +93,184 @@ export function PostCard({ post }: PostCardProps) {
     return null;
   };
 
-  return (
-    <div className="glass-card rounded-3xl p-8 hover:bg-white/20 transition-all duration-300">
-      {/* Enhanced Header with AI Insights */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          {/* Author info */}
-          <div className="flex items-center space-x-3">
-            {post.authorProfile?.profileImage ? (
-              <img 
-                src={post.authorProfile.profileImage} 
-                alt={post.authorProfile.username}
-                className="w-12 h-12 rounded-2xl border-2 border-white/20"
-              />
-            ) : (
-              <div className="w-12 h-12 bg-gradient-to-r from-white/30 to-white/10 rounded-2xl flex items-center justify-center text-gray-600 font-semibold border border-white/20">
-                {post.author.slice(2, 4).toUpperCase()}
-              </div>
-            )}
-            <div>
-              <div className="font-semibold text-gray-600 text-lg">
-                {post.authorProfile?.username || `${post.author.slice(0, 6)}...${post.author.slice(-4)}`}
-              </div>
-              <div className="flex items-center space-x-2 text-gray/60 text-sm">
-                <span>{new Date(post.timestamp).toLocaleDateString()}</span>
-                {relevanceScore && (
-                  <div className={`flex items-center space-x-1 ${getRelevanceColor(relevanceScore.score)}`}>
-                    <Sparkles className="w-3 h-3" />
-                    <span className="text-xs">{Math.round(relevanceScore.score * 100)}% relevant</span>
-                  </div>
-                )}
-                {contentAnalysis && getSafetyBadge(contentAnalysis)}
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <button className="p-2 text-gray/60 hover:text-white rounded-xl hover:bg-white/10 transition-colors">
-          <MoreHorizontal className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Content with AI Insights */}
-      <div className="mb-6">
-        <p className="text-gray/90 text-lg leading-relaxed whitespace-pre-wrap mb-4">
-          {post.content}
-        </p>
-        
-        {/* Relevance Factors */}
-        {relevanceScore && (
-          <div className="bg-white/5 rounded-xl p-4 border border-white/10 mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray/70 text-sm">Content Insights</span>
-              <Sparkles className="w-4 h-4 text-purple-400" />
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray/60">Engagement:</span>
-                <span className="text-gray">{Math.round(relevanceScore.factors.engagement * 100)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray/60">Interest Match:</span>
-                <span className="text-gray">{Math.round(relevanceScore.factors.personalInterest * 100)}%</span>
-              </div>
-            </div>
-            {relevanceScore.recommendations.length > 0 && (
-              <div className="mt-2 pt-2 border-t border-white/10">
-                <p className="text-purple-300 text-xs">
-                  💡 {relevanceScore.recommendations[0]}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {post.image && (
-          <div className="rounded-2xl overflow-hidden border border-white/20">
+return (
+  <div className="glass-card rounded-3xl p-8 hover:shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
+    <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center space-x-4">
+        {/* Author info */}
+        <div className="flex items-center space-x-3">
+          {post.authorProfile?.profileImage ? (
             <img 
-              src={post.image} 
-              alt="Post image" 
-              className="w-full max-h-96 object-cover"
+              src={post.authorProfile.profileImage} 
+              alt={post.authorProfile.username}
+              className="w-12 h-12 rounded-2xl border-2 border-white/40 shadow-sm"
             />
-          </div>
-        )}
-      </div>
-
-      {/* Enhanced Actions with Smart Replies */}
-      <div className="flex items-center justify-between pt-6 border-t border-white/20">
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={handleLike}
-            disabled={isLiking}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-              post.isLiked 
-                ? 'bg-red-500/20 text-red-200 border border-red-400/30' 
-                : 'text-white/80 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
-            }`}
-          >
-            <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-current' : ''}`} />
-            <span>{post.likes}</span>
-          </button>
-
-          <button 
-            onClick={() => setShowComments(!showComments)}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20 transition-all duration-200"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span>{post.commentsCount}</span>
-          </button>
-
-          <button
-            onClick={handleSmartReplies}
-            disabled={isGeneratingReplies}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl text-purple-300 hover:text-purple-200 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-500/50 transition-all duration-200 disabled:opacity-50"
-          >
-            <Sparkles className="w-5 h-5" />
-            <span className="text-sm">Smart Reply</span>
-          </button>
-        </div>
-
-        <button className="flex items-center space-x-2 px-4 py-2 rounded-xl text-white/80 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20 transition-all duration-200">
-          <Share className="w-5 h-5" />
-          <span className="text-sm">Share</span>
-        </button>
-      </div>
-
-      {/* Smart Replies Panel */}
-      {showSmartReplies && (
-        <div className="mt-4 glass rounded-2xl p-4 border border-white/20 animate-in fade-in">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-white text-sm flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span>AI Reply Suggestions</span>
-            </h4>
-            <button
-              onClick={() => setShowSmartReplies(false)}
-              className="text-white/60 hover:text-white transition-colors"
-            >
-              <span className="text-sm">Close</span>
-            </button>
-          </div>
-
-          {isGeneratingReplies ? (
-            <div className="flex items-center justify-center py-4">
-              <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mr-2" />
-              <span className="text-white/60 text-sm">Generating smart replies...</span>
-            </div>
           ) : (
-            <div className="space-y-2">
-              {smartReplies.map((reply) => (
-                <button
-                  key={reply.id}
-                  onClick={() => {
-                    // This would set the comment input with the reply text
-                    setShowSmartReplies(false);
-                  }}
-                  className="w-full text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200"
-                >
-                  <p className="text-white text-sm mb-1">{reply.text}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-white/50 text-xs capitalize">{reply.tone}</span>
-                    <span className="text-white/40 text-xs">
-                      {Math.round(reply.confidence * 100)}% match
-                    </span>
-                  </div>
-                </button>
-              ))}
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-2xl flex items-center justify-center text-gray-900 font-semibold border border-white/40 shadow-sm">
+              {post.author.slice(2, 4).toUpperCase()}
+            </div>
+          )}
+          <div>
+            <div className="font-semibold text-gray-900 text-lg">
+              {post.authorProfile?.username || `${post.author.slice(0, 6)}...${post.author.slice(-4)}`}
+            </div>
+            <div className="flex items-center space-x-2 text-gray-600 text-sm">
+              <span>{new Date(post.timestamp).toLocaleDateString()}</span>
+              {relevanceScore && (
+                <div className={`flex items-center space-x-1 ${getRelevanceColor(relevanceScore.score)}`}>
+                  <Sparkles className="w-3 h-3" />
+                  <span className="text-xs">{Math.round(relevanceScore.score * 100)}% relevant</span>
+                </div>
+              )}
+              {contentAnalysis && getSafetyBadge(contentAnalysis)}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button className="p-2 text-gray-500 hover:text-gray-700 rounded-xl hover:bg-white/80 transition-colors backdrop-blur-sm">
+        <MoreHorizontal className="w-5 h-5" />
+      </button>
+    </div>
+
+    {/* Content with AI Insights */}
+    <div className="mb-6">
+      <p className="text-gray-900 text-lg leading-relaxed whitespace-pre-wrap mb-4 font-medium">
+        {post.content}
+      </p>
+      
+      {/* Relevance Factors */}
+      {relevanceScore && (
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-white/40 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-gray-700 text-sm font-medium">Content Insights</span>
+            <Sparkles className="w-4 h-4 text-purple-600" />
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Engagement:</span>
+              <span className="text-gray-900 font-medium">{Math.round(relevanceScore.factors.engagement * 100)}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Interest Match:</span>
+              <span className="text-gray-900 font-medium">{Math.round(relevanceScore.factors.personalInterest * 100)}%</span>
+            </div>
+          </div>
+          {relevanceScore.recommendations.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-gray-200/50">
+              <p className="text-purple-700 text-sm font-medium">
+                💡 {relevanceScore.recommendations[0]}
+              </p>
             </div>
           )}
         </div>
       )}
 
-      {/* Comment Section */}
-      <CommentSection 
-        postId={post.id} 
-        isOpen={showComments}
-        onClose={() => setShowComments(false)}
-      />
+      {post.image && (
+        <div className="rounded-2xl overflow-hidden border border-white/40 group">
+          <img 
+            src={post.image} 
+            alt="Post image" 
+            className="w-full max-h-96 object-cover transition-transform group-hover:scale-105 duration-500"
+          />
+        </div>
+      )}
     </div>
-  );
+
+    {/* Enhanced Actions with Smart Replies */}
+    <div className="flex items-center justify-between pt-6 border-t border-gray-200/50">
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={handleLike}
+          disabled={isLiking}
+          className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-all duration-200 backdrop-blur-sm border ${
+            post.isLiked 
+              ? 'bg-red-100/80 text-red-700 border-red-200/60 hover:border-red-300/80' 
+              : 'text-gray-700 hover:text-gray-900 hover:bg-white/80 border-transparent hover:border-white/60'
+          }`}
+        >
+          <Heart className={`w-5 h-5 ${post.isLiked ? 'fill-current' : ''}`} />
+          <span className="font-medium">{post.likes}</span>
+        </button>
+
+        <button 
+          onClick={() => setShowComments(!showComments)}
+          className="flex items-center space-x-2 px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-white/80 border border-transparent hover:border-white/60 transition-all duration-200 backdrop-blur-sm"
+        >
+          <MessageCircle className="w-5 h-5" />
+          <span className="font-medium">{post.commentsCount}</span>
+        </button>
+
+        <button
+          onClick={handleSmartReplies}
+          disabled={isGeneratingReplies}
+          className="flex items-center space-x-2 px-4 py-2 rounded-xl text-purple-700 hover:text-purple-800 hover:bg-purple-100/80 border border-purple-200/60 hover:border-purple-300/80 transition-all duration-200 disabled:opacity-50 backdrop-blur-sm"
+        >
+          <Sparkles className="w-5 h-5" />
+          <span className="text-sm font-medium">Smart Reply</span>
+        </button>
+      </div>
+
+      <button className="flex items-center space-x-2 px-4 py-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-white/80 border border-transparent hover:border-white/60 transition-all duration-200 backdrop-blur-sm">
+        <Share className="w-5 h-5" />
+        <span className="text-sm font-medium">Share</span>
+      </button>
+    </div>
+
+    {/* Smart Replies Panel */}
+    {showSmartReplies && (
+      <div className="mt-4 glass rounded-2xl p-6 border border-white/40 animate-in fade-in duration-300">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="font-semibold text-gray-900 text-sm flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            <span>AI Reply Suggestions</span>
+          </h4>
+          <button
+            onClick={() => setShowSmartReplies(false)}
+            className="text-gray-500 hover:text-gray-700 transition-colors p-1 hover:bg-white/60 rounded backdrop-blur-sm"
+          >
+            <span className="text-sm">Close</span>
+          </button>
+        </div>
+
+        {isGeneratingReplies ? (
+          <div className="flex items-center justify-center py-4">
+            <div className="flex items-center space-x-3 px-4 py-2 bg-blue-100/80 border border-blue-200/60 rounded-lg text-blue-700">
+              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              <span className="text-sm">Generating smart replies...</span>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {smartReplies.map((reply) => (
+              <button
+                key={reply.id}
+                onClick={() => {
+                  // This would set the comment input with the reply text
+                  setShowSmartReplies(false);
+                }}
+                className="w-full text-left p-4 bg-white/80 hover:bg-white border border-white/60 hover:border-blue-300 rounded-xl transition-all duration-200 group backdrop-blur-sm hover:scale-105"
+              >
+                <p className="text-gray-900 text-sm mb-2 font-medium">{reply.text}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600 text-xs capitalize font-medium">{reply.tone}</span>
+                  <span className="text-gray-500 text-xs">
+                    {Math.round(reply.confidence * 100)}% match
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )}
+
+    {/* Comment Section */}
+    <CommentSection 
+      postId={post.id} 
+      isOpen={showComments}
+      onClose={() => setShowComments(false)}
+    />
+  </div>
+);
 }
