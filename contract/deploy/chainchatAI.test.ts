@@ -11,7 +11,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     from: deployer,
     args: [], 
     log: true,
-    waitConfirmations: 1,
+    waitConfirmations: 3,
   });
 
   // Deploy ChainchatAI with token address
@@ -19,7 +19,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     from: deployer,
     args: [tokenDeployment.address], 
     log: true,
-    waitConfirmations: 1,
+    waitConfirmations: 3,
   });
 
   // Fund Chainchat contract with CCT for rewards
