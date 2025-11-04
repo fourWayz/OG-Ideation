@@ -1,5 +1,6 @@
 import type { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import '@nomicfoundation/hardhat-verify'
 import 'hardhat-deploy'
 import * as dotenv from 'dotenv'
 import '@typechain/hardhat'
