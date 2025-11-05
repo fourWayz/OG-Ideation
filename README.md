@@ -1,3 +1,4 @@
+https://x.com/fourways_dev/status/1985982208364904490
 
 # ChainChatAI – AI-Powered Social dApp on OG Chain
 
