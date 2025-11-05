@@ -13,7 +13,7 @@ export function useContract() {
   
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [signer, setSigner] = useState<ethers.Signer | null>(null);
-
+ 
   useEffect(() => {
     const initializeContract = async () => {
       if (!walletClient || !address) return;
